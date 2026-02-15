@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: actions/setup-go@v6.2.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - run: >
+          go tool ginkgo run -r
+          --race
+          --trace
+          --randomize-all
+          --github-output
+          --cover
+
+      - uses: codecov/codecov-action@v5.5.2
+        with:
+          use_oidc: true
+          fail_ci_if_error: true
+          files: coverprofile.out
+
+  container:
+    name: Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - uses: redhat-actions/podman-install@main
+        with:
+          github-token: ${{ github.token }}
+
+      - uses: cachix/install-nix-action@v31.9.1
+        with:
+          github_access_token: ${{ github.token }}
+
+      - run: nix build .#ctr
+      - run: podman load --input result
+
+      - id: meta
+        uses: docker/metadata-action@v5.10.0
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+
+      - run: |
+          TAGS="$(echo '${{ steps.meta.outputs.tags }}' | tr '\n' ' ')"
+          echo "TAGS=$TAGS" >> $GITHUB_ENV
+
+      - run: podman image tag fenced:0.0.1 ${{ env.TAGS }}
+
+      - uses: redhat-actions/podman-login@v1
+        if: github.ref_name == 'main'
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - if: github.ref_name == 'main'
+        run: podman push ${{ env.TAGS }}
+
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+
+      - run: make deps
+      - run: git diff --exit-code

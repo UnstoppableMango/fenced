@@ -1,0 +1,8 @@
+.envrc
+.direnv/
+.vscode/*
+!.vscode/extensions.json
+.zed/*
+result
+bin/
+*cover*
