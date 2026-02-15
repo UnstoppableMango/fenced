@@ -7,40 +7,43 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/unstoppablemango/fenced/cmd"
 
 	"github.com/onsi/gomega/gbytes"
 	"github.com/onsi/gomega/gexec"
-	"github.com/unstoppablemango/fenced/cmd"
 )
 
 var _ = Describe("E2e", func() {
 	When("no args are provided", func() {
-		var ses *gexec.Session
-
-		BeforeEach(func() {
-			ses = run()
-		})
-
 		It("should exit", func() {
+			ses := run(exec.Command(binPath))
+
 			Eventually(ses).Should(gexec.Exit())
 		})
 	})
 
 	When("a filepath is provided", func() {
-		var ses *gexec.Session
+		var testdata string
 
 		BeforeEach(func() {
 			wd, err := os.Getwd()
 			Expect(err).NotTo(HaveOccurred())
-			ses = run(filepath.Join(wd, "testdata", "markdown.md"))
+			testdata = filepath.Join(wd, "testdata")
 		})
 
 		It("should exit", func() {
+			cmd := exec.Command(binPath, filepath.Join(testdata, "markdown.md"))
+
+			ses := run(cmd)
+
 			Eventually(ses).Should(gexec.Exit())
 		})
 
 		It("should print the fenced code", func() {
+			cmd := exec.Command(binPath, filepath.Join(testdata, "markdown.md"))
 			expected := "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n"
+
+			ses := run(cmd)
 
 			Eventually(ses).Should(gexec.Exit(0))
 			Expect(ses.Out.Contents()).To(Equal([]byte(expected)))
@@ -49,7 +52,7 @@ var _ = Describe("E2e", func() {
 
 	Describe("version", func() {
 		It("should print the version", func() {
-			ses := run("version")
+			ses := run(exec.Command(binPath, "version"))
 
 			Eventually(ses).Should(gexec.Exit(0))
 			Expect(ses.Out).Should(gbytes.Say(cmd.Version))
@@ -69,10 +72,8 @@ var _ = AfterSuite(func() {
 	gexec.CleanupBuildArtifacts()
 })
 
-func run(args ...string) *gexec.Session {
-	cmd := exec.Command(binPath, args...)
+func run(cmd *exec.Cmd) *gexec.Session {
 	ses, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
 	Expect(err).NotTo(HaveOccurred())
-
 	return ses
 }

@@ -71,7 +71,7 @@ jobs:
           TAGS="$(echo '${{ steps.meta.outputs.tags }}' | tr '\n' ' ')"
           echo "TAGS=$TAGS" >> $GITHUB_ENV
 
-      - run: podman image tag fenced:0.0.1 '${{ env.TAGS }}'
+      - run: podman image tag fenced:0.0.1 ${{ env.TAGS }}
 
       - uses: redhat-actions/podman-login@v1
         if: github.ref_name == 'main'

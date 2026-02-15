@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	asterisks = []byte("***")
+	tildes    = []byte("~~~")
 	backticks = []byte("```")
 )
 
@@ -58,5 +58,5 @@ func cutPrefix(line []byte) (after []byte, ok bool) {
 	if after, ok = bytes.CutPrefix(line, backticks); ok {
 		return
 	}
-	return bytes.CutPrefix(line, asterisks)
+	return bytes.CutPrefix(line, tildes)
 }

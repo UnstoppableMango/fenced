@@ -57,8 +57,8 @@ var _ = Describe("Fence", func() {
 			Expect(codeBlocks).To(Equal(expected))
 		})
 
-		It("should parse a single code block with asterisks", func() {
-			input := "***\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n***"
+		It("should parse a single code block with tildes", func() {
+			input := "~~~\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n~~~"
 			expected := []fenced.Block{{
 				Content: "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n",
 			}}
