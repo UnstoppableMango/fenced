@@ -13,7 +13,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "fenced [PATH]",
 	Short: "Parse code fences from anywhere",
-	Args:  cobra.ArbitraryArgs,
+	Args:  cobra.MaximumNArgs(1),
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if d := os.Getenv("DEBUG"); d != "" {
 			log.SetLevel(log.DebugLevel)

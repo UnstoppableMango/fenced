@@ -43,7 +43,8 @@ func Parse(r io.Reader) ([]Block, error) {
 			lang = string(after)
 			inBlock = !inBlock
 		} else if inBlock {
-			cur.Write(append(data, '\n'))
+			cur.Write(data)
+			cur.WriteRune('\n')
 		}
 	}
 

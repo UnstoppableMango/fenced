@@ -15,7 +15,8 @@ func main() {
 
 ```go
 import (
-    "fs"
+    "fmt"
+    "io/fs"
     "os"
 
     fenced "github.com/unstoppablemango/fenced/pkg"
@@ -26,6 +27,7 @@ func main() {
     if err != nil {
         panic(err)
     }
+    defer f.Close()
 
     blocks, err := fenced.Parse(f)
     if err != nil {
