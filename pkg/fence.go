@@ -2,26 +2,48 @@ package fenced
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 	"strings"
 )
 
-func Parse(r io.Reader) ([]string, error) {
-	var codeBlocks []string
+var (
+	asterisks = []byte("***")
+	backticks = []byte("```")
+)
+
+type Block struct {
+	Content string
+	Lang    string
+}
+
+func (b Block) String() string {
+	return b.Content
+}
+
+func Parse(r io.Reader) ([]Block, error) {
+	var blocks []Block
+	var cur strings.Builder
+	var lang string
+
 	scanner := bufio.NewScanner(r)
-	inCodeBlock := false
-	var codeBlock strings.Builder
+	inBlock := false
 
 	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.HasPrefix(line, "```") {
-			if inCodeBlock {
-				codeBlocks = append(codeBlocks, codeBlock.String())
-				codeBlock.Reset()
+		data := scanner.Bytes()
+		if after, ok := cutPrefix(data); ok {
+			if inBlock {
+				blocks = append(blocks, Block{
+					Content: cur.String(),
+					Lang:    string(lang),
+				})
+				cur.Reset()
 			}
-			inCodeBlock = !inCodeBlock
-		} else if inCodeBlock {
-			codeBlock.WriteString(line + "\n")
+
+			lang = string(after)
+			inBlock = !inBlock
+		} else if inBlock {
+			cur.Write(append(data, '\n'))
 		}
 	}
 
@@ -29,5 +51,12 @@ func Parse(r io.Reader) ([]string, error) {
 		return nil, err
 	}
 
-	return codeBlocks, nil
+	return blocks, nil
+}
+
+func cutPrefix(line []byte) (after []byte, ok bool) {
+	if after, ok = bytes.CutPrefix(line, backticks); ok {
+		return
+	}
+	return bytes.CutPrefix(line, asterisks)
 }

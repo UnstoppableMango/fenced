@@ -32,7 +32,7 @@ var rootCmd = &cobra.Command{
 
 		out := cmd.OutOrStdout()
 		for _, b := range blocks {
-			if _, err := io.WriteString(out, b); err != nil {
+			if _, err := io.WriteString(out, b.String()); err != nil {
 				cli.Fail(err)
 			}
 		}

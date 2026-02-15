@@ -68,7 +68,10 @@ jobs:
             type=sha
 
       - run: |
-          podman image tag fenced:0.0.1 ${{ steps.meta.outputs.tags }}
+          TAGS="$(echo '${{ steps.meta.outputs.tags }}' | tr '\n' ' ')"
+          echo "TAGS=$TAGS" >> $GITHUB_ENV
+
+      - run: podman image tag fenced:0.0.1 '${{ env.TAGS }}'
 
       - uses: redhat-actions/podman-login@v1
         if: github.ref_name == 'main'
@@ -78,8 +81,7 @@ jobs:
           password: ${{ github.token }}
 
       - if: github.ref_name == 'main'
-        run: |
-          podman push ${{ steps.meta.outputs.tags }}
+        run: podman push ${{ env.TAGS }}
 
   clean:
     runs-on: ubuntu-latest
