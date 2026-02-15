@@ -67,11 +67,20 @@ jobs:
             type=semver,pattern={{major}}
             type=sha
 
-      - run: podman image tag fenced:0.0.1
+      - run: |
+          podman image tag fenced:0.0.1 ${{ steps.meta.outputs.tags }}
 
-      - uses: docker/login-action@v3.7.0
+      - uses: redhat-actions/podman-login@v1
         if: github.ref_name == 'main'
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ github.token }}
+
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - run: make deps
+      - run: git diff --exit-code
