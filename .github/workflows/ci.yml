@@ -9,9 +9,11 @@ on:
 permissions:
   contents: read
   id-token: write
+  packages: write
 
 jobs:
   build:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -36,15 +38,26 @@ jobs:
           files: coverprofile.out
 
   container:
+    name: Docker
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
+      - uses: redhat-actions/podman-install@main
+        with:
+          github-token: ${{ github.token }}
+
+      - uses: cachix/install-nix-action@v31.9.1
+        with:
+          github_access_token: ${{ github.token }}
+
+      - run: nix build .#ctr
+      - run: podman load --input result
+
       - id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v5.10.0
         with:
           images: |
-            docker.io/${{ github.repository }}
             ghcr.io/${{ github.repository }}
           tags: |
             type=ref,event=branch
@@ -53,3 +66,12 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
+
+      - run: podman image tag fenced:0.0.1
+
+      - uses: docker/login-action@v3.7.0
+        if: github.ref_name == 'main'
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}

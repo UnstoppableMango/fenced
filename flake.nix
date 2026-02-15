@@ -40,6 +40,11 @@
 
           goEnv = mkGoEnv { pwd = ./.; };
 
+          podman-setup = pkgs.writeScript "podman-setup" ''
+            #!${pkgs.runtimeShell}
+            install -Dm555 ${pkgs.skopeo.src}/default-policy.json ~/.config/containers/policy.json
+          '';
+
           version = "0.0.1";
           fenced = buildGoApplication {
             pname = "fenced";
@@ -64,11 +69,11 @@
             };
           };
 
-          ctr = pkgs.dockerTools.buildImage {
+          ctr = pkgs.dockerTools.buildLayeredImage {
             name = "fenced";
             tag = version;
 
-            copyToRoot = pkgs.buildEnv {
+            contents = pkgs.buildEnv {
               name = "image-root";
               paths = [ fenced ];
               pathsToLink = [ "/bin" ];
@@ -92,19 +97,24 @@
 
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
+              docker
               ginkgo
               go
               goEnv
               gomod2nix
               nix
               nixfmt
+              podman
+              podman-setup
               watchexec
             ];
 
+            DOCKER = "${pkgs.docker}/bin/docker";
             GINKGO = "${pkgs.ginkgo}/bin/ginkgo";
             GO = "${pkgs.go}/bin/go";
             GOMOD2NIX = "${gomod2nix}/bin/gomod2nix";
             NIX = "${pkgs.nix}/bin/nix";
+            PODMAN = "${pkgs.podman}/bin/podman";
             WATCHEXEC = "${pkgs.watchexec}/bin/watchexec";
           };
 
