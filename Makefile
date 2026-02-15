@@ -25,6 +25,9 @@ cover: coverprofile.out
 update:
 	$(NIX) flake update
 
+clean:
+	find . -type f -name '*cover*' -delete
+
 ifneq (${IN_NIX_SHELL},)
 bin/fenced: result
 	mkdir -p $(dir $@) && ln -s $(abspath $<)/bin/fenced $@
