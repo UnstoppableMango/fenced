@@ -40,11 +40,6 @@
 
           goEnv = mkGoEnv { pwd = ./.; };
 
-          podman-setup = pkgs.writeScript "podman-setup" ''
-            #!${pkgs.runtimeShell}
-            install -Dm555 ${pkgs.skopeo.src}/default-policy.json ~/.config/containers/policy.json
-          '';
-
           version = "0.0.1";
           fenced = buildGoApplication {
             pname = "fenced";
@@ -52,7 +47,10 @@
 
             modules = ./gomod2nix.toml;
             src = lib.cleanSource ./.;
-            ldFlags = [ "-X github.com/unstoppablemango/fenced/cmd.Version=${version}" ];
+
+            ldFlags = [
+              "-X github.com/unstoppablemango/fenced/cmd.Version=${version}"
+            ];
 
             nativeBuildInputs = [ pkgs.ginkgo ];
 
@@ -105,7 +103,6 @@
               nix
               nixfmt
               podman
-              podman-setup
               watchexec
             ];
 
