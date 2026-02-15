@@ -4,7 +4,7 @@ This document provides guidelines for AI agents contributing to the fenced proje
 
 ## About Fenced
 
-Fenced is a Go library and CLI tool for parsing code fences from text (e.g., Markdown files). It extracts code blocks delimited by backticks (` ``` `) or asterisks (`***`), preserving the language identifier and content.
+Fenced is a Go library and CLI tool for parsing code fences from text (e.g., Markdown files). It extracts code blocks delimited by backticks (` ``` `) or tildes (`~~~`), preserving the language identifier and content.
 
 ## Repository Structure
 
