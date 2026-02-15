@@ -78,7 +78,7 @@
             };
 
             config = {
-              Cmd = [ "/bin/fenced" ];
+              Entrypoint = [ "/bin/fenced" ];
             };
           };
         in
