@@ -16,12 +16,13 @@ func main() {
 ```go
 import (
     "fs"
+    "os"
 
     fenced "github.com/unstoppablemango/fenced/pkg"
 )
 
 func main() {
-    f, err := fs.Open("testdata/markdown.md")
+    f, err := os.Open("testdata/markdown.md")
     if err != nil {
         panic(err)
     }
