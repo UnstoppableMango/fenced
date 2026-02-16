@@ -7,3 +7,5 @@ result
 bin/
 *cover*
 dist/
+/fenced
+*.test

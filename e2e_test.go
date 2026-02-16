@@ -1,6 +1,7 @@
 package main_test
 
 import (
+	"bytes"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -14,11 +15,35 @@ import (
 )
 
 var _ = Describe("E2e", func() {
-	When("no args are provided", func() {
-		It("should exit", func() {
+	When("no args are provided and stdin is empty", func() {
+		It("should exit successfully", func() {
 			ses := run(exec.Command(binPath))
 
-			Eventually(ses).Should(gexec.Exit())
+			Eventually(ses).Should(gexec.Exit(0))
+		})
+	})
+
+	When("stdin has piped content", func() {
+		It("should parse fenced blocks from stdin", func() {
+			cmd := exec.Command(binPath)
+			cmd.Stdin = bytes.NewBufferString("```go\nfmt.Println(\"test\")\n```\n")
+
+			ses := run(cmd)
+
+			Eventually(ses).Should(gexec.Exit(0))
+			Expect(ses.Out).Should(gbytes.Say("fmt.Println"))
+		})
+	})
+
+	When("hyphen argument is provided", func() {
+		It("should read from stdin", func() {
+			cmd := exec.Command(binPath, "-")
+			cmd.Stdin = bytes.NewBufferString("```python\nprint('hello')\n```\n")
+
+			ses := run(cmd)
+
+			Eventually(ses).Should(gexec.Exit(0))
+			Expect(ses.Out).Should(gbytes.Say("print\\('hello'\\)"))
 		})
 	})
 
