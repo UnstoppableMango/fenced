@@ -45,6 +45,13 @@ func main() {
 }
 ```
 
+Parse from multiple files:
+
+```shell
+$ fenced file1.md file2.md file3.md
+# Output from all files concatenated
+```
+
 Or pipe content to stdin:
 
 ```shell
@@ -56,13 +63,16 @@ func main() {
 }
 ```
 
-Use `-` to explicitly read from stdin (useful in scripts):
+Use `-` to explicitly read from stdin (useful in scripts or mixing with files):
 
 ```shell
 $ echo '```bash
 echo "Hello"
 ```' | fenced -
 echo "Hello"
+
+$ fenced file1.md - file2.md < input.md
+# Reads file1.md, then stdin, then file2.md
 ```
 
 ### Docker
