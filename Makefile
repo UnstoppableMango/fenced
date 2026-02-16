@@ -1,8 +1,9 @@
-GO        ?= go
-GOMOD2NIX ?= $(GO) tool gomod2nix
-GINKGO    ?= $(GO) tool ginkgo
-NIX       ?= nix
-WATCHEXEC ?= watchexec
+GO         ?= go
+GOMOD2NIX  ?= $(GO) tool gomod2nix
+GORELEASER ?= $(GO) tool goreleaser
+GINKGO     ?= $(GO) tool ginkgo
+NIX        ?= nix
+WATCHEXEC  ?= watchexec
 
 GO_SRC ?= $(shell find . -name '*.go')
 
