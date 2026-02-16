@@ -76,12 +76,12 @@ var _ = Describe("E2e", func() {
 
 		It("should insert delimiter between multiple blocks", func() {
 			cmd := exec.Command(binPath, "-d", "\n===\n", filepath.Join(testdata, "multiple-blocks.md"))
+			expected := "package main\n\n===\nfunc main() {}\n"
 
 			ses := run(cmd)
 
 			Eventually(ses).Should(gexec.Exit(0))
-			output := string(ses.Out.Contents())
-			Expect(output).To(Equal("package main\n\n===\nfunc main() {}\n"))
+			Expect(ses.Out.Contents()).To(Equal([]byte(expected)))
 		})
 	})
 
