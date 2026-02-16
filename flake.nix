@@ -91,13 +91,17 @@
 
           apps = {
             default = {
-              program = fenced;
+              type = "app";
+              program = lib.getExe fenced;
               meta = fenced.meta;
             };
 
-            version.program = pkgs.writeShellScriptBin "version" ''
-              echo -n "${version}"
-            '';
+            version = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellScriptBin "version" ''
+                echo -n "${version}"
+              '');
+            };
           };
 
           devShells.default = pkgs.mkShellNoCC {
