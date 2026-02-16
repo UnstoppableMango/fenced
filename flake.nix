@@ -40,7 +40,7 @@
 
           goEnv = mkGoEnv { pwd = ./.; };
 
-          version = "0.0.1";
+          version = "0.0.5";
           fenced = buildGoApplication {
             pname = "fenced";
             inherit version;
