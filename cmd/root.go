@@ -2,6 +2,7 @@
 package cmd
 
 import (
+	"errors"
 	"io"
 	"os"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/unmango/go/cli"
 	fenced "github.com/unstoppablemango/fenced/pkg"
+	"golang.org/x/term"
 )
 
 var rootCmd = &cobra.Command{
@@ -53,6 +55,9 @@ func Execute() error {
 func Open(cmd *cobra.Command, args []string) (io.Reader, error) {
 	if len(args) == 0 {
 		log.Debug("Choosing stdin")
+		if term.IsTerminal(int(os.Stdin.Fd())) {
+			return nil, errors.New("stdin is a terminal; please provide a file path or pipe input")
+		}
 		return cmd.InOrStdin(), nil
 	}
 
