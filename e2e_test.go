@@ -35,6 +35,18 @@ var _ = Describe("E2e", func() {
 		})
 	})
 
+	When("hyphen argument is provided", func() {
+		It("should read from stdin", func() {
+			cmd := exec.Command(binPath, "-")
+			cmd.Stdin = bytes.NewBufferString("```python\nprint('hello')\n```\n")
+
+			ses := run(cmd)
+
+			Eventually(ses).Should(gexec.Exit(0))
+			Expect(ses.Out).Should(gbytes.Say("print\\('hello'\\)"))
+		})
+	})
+
 	When("a filepath is provided", func() {
 		var testdata string
 

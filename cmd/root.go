@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 	"github.com/unmango/go/cli"
 	fenced "github.com/unstoppablemango/fenced/pkg"
@@ -16,6 +17,11 @@ var rootCmd = &cobra.Command{
 	Use:   "fenced [PATH]",
 	Short: "Parse code fences from anywhere",
 	Args:  cobra.MaximumNArgs(1),
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		if d := os.Getenv("DEBUG"); d != "" {
+			log.SetLevel(log.DebugLevel)
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		in, err := Open(cmd, args)
 		if err != nil {
@@ -54,6 +60,12 @@ func Open(cmd *cobra.Command, args []string) (io.Reader, error) {
 		return cmd.InOrStdin(), nil
 	}
 
+	if args[0] == "-" {
+		log.Debug("Explicitly reading from stdin")
+		return cmd.InOrStdin(), nil
+	}
+
+	log.Debug("Opening file", "path", args[0])
 	if file, err := os.Open(args[0]); err != nil {
 		return nil, err
 	} else {
