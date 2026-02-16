@@ -42,11 +42,8 @@ var rootCmd = &cobra.Command{
 				}
 			}
 
-			// Close file if it's not stdin
-			if closer, ok := in.(io.Closer); ok && in != cmd.InOrStdin() {
-				if err := closer.Close(); err != nil {
-					log.Warn("Failed to close reader", "error", err)
-				}
+			if err := in.Close(); err != nil {
+				log.Warn("Failed to close reader", "error", err)
 			}
 		}
 	},
