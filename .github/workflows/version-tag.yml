@@ -71,10 +71,10 @@ jobs:
         uses: actions/github-script@v8.0.0
         with:
           script: |
-            const prVersion = '${{ steps.pr-version.outputs.version }}';
-            const baseVersion = '${{ steps.base-version.outputs.version }}';
-            const tag = '${{ steps.pr-version.outputs.tag }}';
-            const tagExists = '${{ steps.check-tag.outputs.exists }}' === 'true';
+            const prVersion = ${{ toJson(steps.pr-version.outputs.version) }};
+            const baseVersion = ${{ toJson(steps.base-version.outputs.version) }};
+            const tag = ${{ toJson(steps.pr-version.outputs.tag) }};
+            const tagExists = ${{ steps.check-tag.outputs.exists == 'true' }};
             
             let message = `## 🏷️ Version Change Detected\n\n`;
             message += `Merging this PR will update the version:\n`;
