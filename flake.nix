@@ -101,6 +101,7 @@
               ginkgo
               go
               goEnv
+              golangci-lint
               gomod2nix
               goreleaser
               nix
@@ -113,6 +114,7 @@
             GINKGO = "${pkgs.ginkgo}/bin/ginkgo";
             GO = "${pkgs.go}/bin/go";
             GOMOD2NIX = "${gomod2nix}/bin/gomod2nix";
+            GOLANGCI = "${pkgs.golangci-lint}/bin/golangci-lint";
             GORELEASER = "${pkgs.goreleaser}/bin/goreleaser";
             NIX = "${pkgs.nix}/bin/nix";
             PODMAN = "${pkgs.podman}/bin/podman";

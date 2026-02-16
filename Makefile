@@ -1,5 +1,6 @@
 GO         ?= go
 GOMOD2NIX  ?= $(GO) tool gomod2nix
+GOLANGCI   ?= $(GO) tool golangci-lint
 GORELEASER ?= $(GO) tool goreleaser
 GINKGO     ?= $(GO) tool ginkgo
 NIX        ?= nix
@@ -13,6 +14,9 @@ container ctr: bin/image.tar.gz
 
 check:
 	$(NIX) flake check
+
+lint:
+	$(GOLANGCI) run
 
 test:
 	$(GINKGO) -r

@@ -1,3 +1,4 @@
+// Package cmd implements the command-line interface for fenced.
 package cmd
 
 import (
@@ -43,10 +44,12 @@ func init() {
 	rootCmd.AddCommand(versionCmd)
 }
 
+// Execute runs the root command.
 func Execute() error {
 	return rootCmd.Execute()
 }
 
+// Open returns a reader for the input source (file or stdin).
 func Open(cmd *cobra.Command, args []string) (io.Reader, error) {
 	if len(args) == 0 {
 		log.Debug("Choosing stdin")
