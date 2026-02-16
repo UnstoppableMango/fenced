@@ -62,10 +62,10 @@ func Execute() error {
 }
 
 // Open returns a reader for the given input (file or stdin).
-func Open(cmd *cobra.Command, path string) (io.Reader, error) {
+func Open(cmd *cobra.Command, path string) (io.ReadCloser, error) {
 	if path == "-" {
 		log.Debug("Reading from stdin")
-		return cmd.InOrStdin(), nil
+		return io.NopCloser(cmd.InOrStdin()), nil
 	} else {
 		log.Debug("Opening file", "path", path)
 		return os.Open(filepath.Clean(path))
@@ -73,15 +73,16 @@ func Open(cmd *cobra.Command, path string) (io.Reader, error) {
 }
 
 // OpenAll returns readers for the input sources (files or stdin).
-func OpenAll(cmd *cobra.Command, args []string) ([]io.Reader, error) {
+func OpenAll(cmd *cobra.Command, args []string) ([]io.ReadCloser, error) {
 	if len(args) == 0 {
 		if term.IsTerminal(int(os.Stdin.Fd())) {
 			return nil, errors.New("stdin is a terminal; provide a file path or pipe input")
 		}
-		return []io.Reader{cmd.InOrStdin()}, nil
+		in := io.NopCloser(cmd.InOrStdin())
+		return []io.ReadCloser{in}, nil
 	}
 
-	readers := make([]io.Reader, 0, len(args))
+	readers := make([]io.ReadCloser, 0, len(args))
 	for _, path := range args {
 		if r, err := Open(cmd, path); err != nil {
 			return nil, err
