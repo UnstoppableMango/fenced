@@ -8,7 +8,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
   packages: write
 
@@ -52,6 +52,11 @@ jobs:
       - uses: cachix/install-nix-action@v31.9.1
         with:
           github_access_token: ${{ github.token }}
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: unstoppablemango
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - run: nix build .#ctr
       - run: podman load --input result
