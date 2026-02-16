@@ -25,6 +25,10 @@ cover: coverprofile.out
 update:
 	$(NIX) flake update
 
+.PHONY: dist
+dist:
+	$(GORELEASER) build --snapshot --clean
+
 clean:
 	find . -type f -name '*cover*' -delete
 
