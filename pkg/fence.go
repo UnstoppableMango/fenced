@@ -1,3 +1,4 @@
+// Package fenced provides utilities for parsing code fences from text.
 package fenced
 
 import (
@@ -12,6 +13,7 @@ var (
 	backticks = []byte("```")
 )
 
+// Block represents a parsed code fence block with its content and language identifier.
 type Block struct {
 	Content string
 	Lang    string
@@ -21,6 +23,7 @@ func (b Block) String() string {
 	return b.Content
 }
 
+// Parse extracts code fence blocks from the provided reader.
 func Parse(r io.Reader) ([]Block, error) {
 	var blocks []Block
 	var cur strings.Builder
@@ -35,7 +38,7 @@ func Parse(r io.Reader) ([]Block, error) {
 			if inBlock {
 				blocks = append(blocks, Block{
 					Content: cur.String(),
-					Lang:    string(lang),
+					Lang:    lang,
 				})
 				cur.Reset()
 			}

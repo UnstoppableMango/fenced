@@ -7,6 +7,7 @@ import (
 )
 
 var (
+	// Version is the current version of the application.
 	Version = "0.0.1-alpha"
 
 	versionCmd = &cobra.Command{
