@@ -78,6 +78,7 @@
             };
 
             config = {
+              Workdir = "/data";
               Entrypoint = [ "/bin/fenced" ];
             };
           };
