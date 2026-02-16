@@ -95,11 +95,13 @@
 
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
+              bashInteractive
               docker
               ginkgo
               go
               goEnv
               gomod2nix
+              goreleaser
               nix
               nixfmt
               podman
@@ -110,6 +112,7 @@
             GINKGO = "${pkgs.ginkgo}/bin/ginkgo";
             GO = "${pkgs.go}/bin/go";
             GOMOD2NIX = "${gomod2nix}/bin/gomod2nix";
+            GORELEASER = "${pkgs.goreleaser}/bin/goreleaser";
             NIX = "${pkgs.nix}/bin/nix";
             PODMAN = "${pkgs.podman}/bin/podman";
             WATCHEXEC = "${pkgs.watchexec}/bin/watchexec";
