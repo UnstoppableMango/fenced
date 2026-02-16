@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD010 -->
 # fenced
 
 [![CI](https://img.shields.io/github/actions/workflow/status/UnstoppableMango/fenced/ci.yml?branch=main&label=CI)](https://github.com/UnstoppableMango/fenced/actions/workflows/ci.yml)
@@ -33,6 +34,8 @@ mkdir -p ~/.local/bin && mv fenced ~/.local/bin/
 
 ### CLI
 
+Parse fenced code blocks from a file:
+
 ```shell
 $ fenced testdata/markdown.md
 import "fmt"
@@ -40,6 +43,26 @@ import "fmt"
 func main() {
 	fmt.Println("Hello, World!")
 }
+```
+
+Or pipe content to stdin:
+
+```shell
+$ cat testdata/markdown.md | fenced
+import "fmt"
+
+func main() {
+	fmt.Println("Hello, World!")
+}
+```
+
+Use `-` to explicitly read from stdin (useful in scripts):
+
+```shell
+$ echo '```bash
+echo "Hello"
+```' | fenced -
+echo "Hello"
 ```
 
 ### Docker
