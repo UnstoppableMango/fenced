@@ -2,6 +2,7 @@
 # It uses 'nix run .#version' to extract the version and creates a tag in the format "vX.Y.Z".
 # If the tag already exists, it skips creation to avoid conflicts.
 # On pull requests, it comments when merging would create a new tag.
+# Note: Tag creation only runs in the main repository, not in forks.
 
 name: Version Tag
 
@@ -119,7 +120,7 @@ jobs:
   create-tag:
     name: Create Version Tag
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.repository == 'UnstoppableMango/fenced'
     steps:
       - uses: actions/checkout@v6.0.2
         with:
