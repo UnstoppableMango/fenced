@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
@@ -14,29 +15,35 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "fenced [PATH]",
-	Short: "Parse code fences from anywhere",
-	Args:  cobra.MaximumNArgs(1),
+	Use:   "fenced [PATH...]",
+	Short: "Parses code fences",
+	Args:  cobra.ArbitraryArgs,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if d := os.Getenv("DEBUG"); d != "" {
 			log.SetLevel(log.DebugLevel)
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		in, err := Open(cmd, args)
-		if err != nil {
-			cli.Fail(err)
-		}
-
-		blocks, err := fenced.Parse(in)
+		readers, err := OpenAll(cmd, args)
 		if err != nil {
 			cli.Fail(err)
 		}
 
 		out := cmd.OutOrStdout()
-		for _, b := range blocks {
-			if _, err := io.WriteString(out, b.String()); err != nil {
+		for _, in := range readers {
+			blocks, err := fenced.Parse(in)
+			if err != nil {
 				cli.Fail(err)
+			}
+
+			for _, b := range blocks {
+				if _, err := io.WriteString(out, b.String()); err != nil {
+					cli.Fail(err)
+				}
+			}
+
+			if err := in.Close(); err != nil {
+				log.Warn("Failed to close reader", "error", err)
 			}
 		}
 	},
@@ -51,24 +58,35 @@ func Execute() error {
 	return rootCmd.Execute()
 }
 
-// Open returns a reader for the input source (file or stdin).
-func Open(cmd *cobra.Command, args []string) (io.Reader, error) {
+// Open returns a reader for the given input (file or stdin).
+func Open(cmd *cobra.Command, path string) (io.ReadCloser, error) {
+	if path == "-" {
+		log.Debug("Reading from stdin")
+		return io.NopCloser(cmd.InOrStdin()), nil
+	} else {
+		log.Debug("Opening file", "path", path)
+		return os.Open(filepath.Clean(path))
+	}
+}
+
+// OpenAll returns readers for the input sources (files or stdin).
+func OpenAll(cmd *cobra.Command, args []string) ([]io.ReadCloser, error) {
 	if len(args) == 0 {
 		if term.IsTerminal(int(os.Stdin.Fd())) {
 			return nil, errors.New("stdin is a terminal; provide a file path or pipe input")
 		}
-		return cmd.InOrStdin(), nil
+		in := io.NopCloser(cmd.InOrStdin())
+		return []io.ReadCloser{in}, nil
 	}
 
-	if args[0] == "-" {
-		log.Debug("Explicitly reading from stdin")
-		return cmd.InOrStdin(), nil
+	readers := make([]io.ReadCloser, 0, len(args))
+	for _, path := range args {
+		if r, err := Open(cmd, path); err != nil {
+			return nil, err
+		} else {
+			readers = append(readers, r)
+		}
 	}
 
-	log.Debug("Opening file", "path", args[0])
-	if file, err := os.Open(args[0]); err != nil {
-		return nil, err
-	} else {
-		return file, nil
-	}
+	return readers, nil
 }

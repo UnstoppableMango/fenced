@@ -75,6 +75,49 @@ var _ = Describe("E2e", func() {
 		})
 	})
 
+	When("multiple filepaths are provided", func() {
+		var testdata string
+
+		BeforeEach(func() {
+			wd, err := os.Getwd()
+			Expect(err).NotTo(HaveOccurred())
+			testdata = filepath.Join(wd, "testdata")
+		})
+
+		It("should parse all files in order", func() {
+			cmd := exec.Command(binPath,
+				filepath.Join(testdata, "markdown.md"),
+				filepath.Join(testdata, "python.md"))
+
+			ses := run(cmd)
+
+			Eventually(ses).Should(gexec.Exit(0))
+			Expect(ses.Out).Should(gbytes.Say("import \"fmt\""))
+			Expect(ses.Out).Should(gbytes.Say("def hello\\(\\):"))
+		})
+	})
+
+	When("files and stdin are mixed", func() {
+		var testdata string
+
+		BeforeEach(func() {
+			wd, err := os.Getwd()
+			Expect(err).NotTo(HaveOccurred())
+			testdata = filepath.Join(wd, "testdata")
+		})
+
+		It("should parse file then stdin", func() {
+			cmd := exec.Command(binPath, filepath.Join(testdata, "markdown.md"), "-")
+			cmd.Stdin = bytes.NewBufferString("```ruby\nputs 'test'\n```\n")
+
+			ses := run(cmd)
+
+			Eventually(ses).Should(gexec.Exit(0))
+			Expect(ses.Out).Should(gbytes.Say("import \"fmt\""))
+			Expect(ses.Out).Should(gbytes.Say("puts 'test'"))
+		})
+	})
+
 	Describe("version", func() {
 		It("should print the version", func() {
 			ses := run(exec.Command(binPath, "version"))
