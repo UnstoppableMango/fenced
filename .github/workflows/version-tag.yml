@@ -26,8 +26,6 @@ jobs:
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v6.0.2
-        with:
-          fetch-depth: 0
 
       - uses: cachix/install-nix-action@v31.9.1
         with:
@@ -43,7 +41,7 @@ jobs:
       - name: Get base version
         id: base-version
         run: |
-          git checkout ${{ github.base_ref }}
+          git checkout ${{ github.event.pull_request.base.sha }}
           VERSION="$(nix run .#version)"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
