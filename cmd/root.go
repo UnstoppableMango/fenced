@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
@@ -67,7 +68,7 @@ func Open(cmd *cobra.Command, path string) (io.Reader, error) {
 		return cmd.InOrStdin(), nil
 	} else {
 		log.Debug("Opening file", "path", path)
-		return os.Open(path)
+		return os.Open(filepath.Clean(path))
 	}
 }
 
