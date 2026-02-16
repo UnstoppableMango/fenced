@@ -104,6 +104,7 @@ jobs:
         run: podman push ${{ env.TAGS }}
 
   clean:
+    name: Clean
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
