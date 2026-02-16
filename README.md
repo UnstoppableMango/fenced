@@ -52,6 +52,17 @@ $ fenced file1.md file2.md file3.md
 # Output from all files concatenated
 ```
 
+Add a delimiter between code blocks:
+
+```shell
+$ fenced -d $'\n---\n' file1.md file2.md
+# First block
+---
+# Second block
+---
+# Third block
+```
+
 Or pipe content to stdin:
 
 ```shell

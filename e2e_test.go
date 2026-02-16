@@ -73,6 +73,16 @@ var _ = Describe("E2e", func() {
 			Eventually(ses).Should(gexec.Exit(0))
 			Expect(ses.Out.Contents()).To(Equal([]byte(expected)))
 		})
+
+		It("should insert delimiter between multiple blocks", func() {
+			cmd := exec.Command(binPath, "-d", "\n===\n", filepath.Join(testdata, "multiple-blocks.md"))
+			expected := "package main\n\n===\nfunc main() {}\n"
+
+			ses := run(cmd)
+
+			Eventually(ses).Should(gexec.Exit(0))
+			Expect(ses.Out.Contents()).To(Equal([]byte(expected)))
+		})
 	})
 
 	When("multiple filepaths are provided", func() {
@@ -94,6 +104,32 @@ var _ = Describe("E2e", func() {
 			Eventually(ses).Should(gexec.Exit(0))
 			Expect(ses.Out).Should(gbytes.Say("import \"fmt\""))
 			Expect(ses.Out).Should(gbytes.Say("def hello\\(\\):"))
+		})
+
+		It("should insert delimiter between blocks when specified", func() {
+			cmd := exec.Command(binPath,
+				"-d", "\n---\n",
+				filepath.Join(testdata, "markdown.md"),
+				filepath.Join(testdata, "python.md"))
+
+			ses := run(cmd)
+
+			Eventually(ses).Should(gexec.Exit(0))
+			expected := "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n\n---\ndef hello():\n    print(\"Hello from Python\")\n"
+			Expect(ses.Out.Contents()).To(Equal([]byte(expected)))
+		})
+
+		It("should insert delimiter using long form flag", func() {
+			cmd := exec.Command(binPath,
+				"--delimiter", " | ",
+				filepath.Join(testdata, "markdown.md"),
+				filepath.Join(testdata, "python.md"))
+
+			ses := run(cmd)
+
+			Eventually(ses).Should(gexec.Exit(0))
+			expected := "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n | def hello():\n    print(\"Hello from Python\")\n"
+			Expect(ses.Out.Contents()).To(Equal([]byte(expected)))
 		})
 	})
 

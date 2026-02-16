@@ -29,7 +29,13 @@ var rootCmd = &cobra.Command{
 			cli.Fail(err)
 		}
 
+		delimiter, err := cmd.Flags().GetString("delimiter")
+		if err != nil {
+			cli.Fail(err)
+		}
+
 		out := cmd.OutOrStdout()
+		first := true
 		for _, in := range readers {
 			blocks, err := fenced.Parse(in)
 			if err != nil {
@@ -37,6 +43,13 @@ var rootCmd = &cobra.Command{
 			}
 
 			for _, b := range blocks {
+				if !first && delimiter != "" {
+					if _, err := io.WriteString(out, delimiter); err != nil {
+						cli.Fail(err)
+					}
+				}
+				first = false
+
 				if _, err := io.WriteString(out, b.String()); err != nil {
 					cli.Fail(err)
 				}
@@ -51,6 +64,7 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.Flags().StringP("delimiter", "d", "", "delimiter to insert between code blocks")
 }
 
 // Execute runs the root command.
