@@ -36,7 +36,7 @@ jobs:
       - name: Get PR version
         id: pr-version
         run: |
-          VERSION=$(nix run '.#version')
+          VERSION="$(nix run .#version)"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
@@ -44,7 +44,7 @@ jobs:
         id: base-version
         run: |
           git checkout ${{ github.base_ref }}
-          VERSION=$(nix run '.#version')
+          VERSION="$(nix run .#version)"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
@@ -134,7 +134,7 @@ jobs:
       - name: Extract version from flake.nix
         id: version
         run: |
-          VERSION=$(nix run '.#version')
+          VERSION="$(nix run .#version)"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
