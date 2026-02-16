@@ -89,9 +89,15 @@
             default = fenced;
           };
 
-          apps.default = {
-            program = fenced;
-            meta = fenced.meta;
+          apps = {
+            default = {
+              program = fenced;
+              meta = fenced.meta;
+            };
+
+            version.program = pkgs.writeShellScriptBin "version" ''
+              echo -n "${version}"
+            '';
           };
 
           devShells.default = pkgs.mkShellNoCC {

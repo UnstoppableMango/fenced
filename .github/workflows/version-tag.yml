@@ -1,0 +1,59 @@
+# This workflow automatically creates a git tag when the version in flake.nix is updated.
+# It uses 'nix run .#version' to extract the version and creates a tag in the format "vX.Y.Z".
+# If the tag already exists, it skips creation to avoid conflicts.
+
+name: Version Tag
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'flake.nix'
+
+permissions:
+  contents: write
+
+jobs:
+  create-tag:
+    name: Create Version Tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+
+      - uses: cachix/install-nix-action@v31.9.1
+        with:
+          github_access_token: ${{ github.token }}
+
+      - name: Extract version from flake.nix
+        id: version
+        run: |
+          VERSION=$(nix run '.#version')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: check-tag
+        run: |
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and push tag
+        if: steps.check-tag.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.version.outputs.tag }}" -m "Release ${{ steps.version.outputs.tag }}"
+          git push origin "${{ steps.version.outputs.tag }}"
+
+      - name: Summary
+        run: |
+          if [[ "${{ steps.check-tag.outputs.exists }}" == "true" ]]; then
+            echo "ℹ️ Tag ${{ steps.version.outputs.tag }} already exists" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Created and pushed tag ${{ steps.version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          fi
