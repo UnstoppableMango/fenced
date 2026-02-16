@@ -89,9 +89,19 @@
             default = fenced;
           };
 
-          apps.default = {
-            program = fenced;
-            meta = fenced.meta;
+          apps = {
+            default = {
+              type = "app";
+              program = lib.getExe fenced;
+              meta = fenced.meta;
+            };
+
+            version = {
+              type = "app";
+              program = lib.getExe (pkgs.writeShellScriptBin "version" ''
+                echo -n "${version}"
+              '');
+            };
           };
 
           devShells.default = pkgs.mkShellNoCC {

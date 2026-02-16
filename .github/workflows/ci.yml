@@ -91,7 +91,9 @@ jobs:
           TAGS="$(echo '${{ steps.meta.outputs.tags }}' | tr '\n' ' ')"
           echo "TAGS=$TAGS" >> $GITHUB_ENV
 
-      - run: podman image tag fenced:0.0.1 ${{ env.TAGS }}
+      - run: |
+          VERSION="$(nix run .#version)"
+          podman image tag "fenced:${VERSION}" ${{ env.TAGS }}
 
       - uses: redhat-actions/podman-login@v1
         if: github.ref_name == 'main'
@@ -104,6 +106,7 @@ jobs:
         run: podman push ${{ env.TAGS }}
 
   clean:
+    name: Clean
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
