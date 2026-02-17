@@ -3,20 +3,15 @@ name: CI
 on:
   push:
     branches: [main]
-    tags: [v*.*.*]
   pull_request:
     branches: [main]
-
-permissions:
-  contents: write
-  id-token: write
-  packages: write
 
 jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    if: github.ref_type != 'tag'
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6.0.2
 
@@ -30,7 +25,9 @@ jobs:
   build:
     name: Build and Test
     runs-on: ubuntu-latest
-    if: github.ref_type != 'tag'
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v6.0.2
 
@@ -56,6 +53,9 @@ jobs:
   container:
     name: Docker
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v6.0.2
 
@@ -108,31 +108,11 @@ jobs:
   clean:
     name: Clean
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v6.0.2
 
       - run: make deps
       - run: git diff --exit-code
-
-  release:
-    name: Release
-    runs-on: ubuntu-latest
-    if: github.ref_type == 'tag'
-    steps:
-      - uses: actions/checkout@v6.0.2
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-go@v6.2.0
-        with:
-          go-version-file: go.mod
-          cache-dependency-path: go.sum
-
-      - uses: goreleaser/goreleaser-action@v6.4.0
-        with:
-          distribution: goreleaser
-          version: '~> v2'
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
