@@ -113,7 +113,9 @@
               goEnv
               golangci-lint
               gomod2nix
+              gopls
               goreleaser
+              nil
               nix
               nixfmt
               podman
