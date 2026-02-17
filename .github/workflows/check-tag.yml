@@ -16,9 +16,12 @@ permissions:
 jobs:
   check-pr:
     name: Check Version in PR
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
 
       - uses: cachix/install-nix-action@v31.9.1
         with:
@@ -67,31 +70,31 @@ jobs:
             const baseVersion = ${{ toJson(steps.base-version.outputs.version) }};
             const tag = ${{ toJson(steps.pr-version.outputs.tag) }};
             const tagExists = ${{ steps.check-tag.outputs.exists == 'true' }};
-            
+
             let message = `## 🏷️ Version Change Detected\n\n`;
             message += `Merging this PR will update the version:\n`;
             message += `- **Current version:** \`${baseVersion}\`\n`;
             message += `- **New version:** \`${prVersion}\`\n\n`;
-            
+
             if (tagExists) {
               message += `⚠️ **Note:** Tag \`${tag}\` already exists and will not be recreated.\n`;
             } else {
               message += `✅ A new tag \`${tag}\` will be automatically created after merging.\n`;
             }
-            
+
             // Find existing comment
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
-            
-            const botComment = comments.find(comment => 
+
+            const botComment = comments.find(comment =>
               comment.user.type === 'Bot' &&
               comment.user.login === 'github-actions[bot]' &&
               comment.body.includes('🏷️ Version Change Detected')
             );
-            
+
             if (botComment) {
               // Update existing comment
               await github.rest.issues.updateComment({
