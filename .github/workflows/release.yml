@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    tags: [v*.*.*]
+    tags: ['v*.*.*']
 
 permissions:
   contents: write
@@ -11,20 +11,60 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    if: github.repository == 'UnstoppableMango/fenced'
     steps:
       - uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
 
+      - uses: cachix/install-nix-action@v31.9.1
+        with:
+          github_access_token: ${{ github.token }}
+
+      - name: Extract version from flake.nix
+        id: version
+        run: |
+          VERSION="$(nix run .#version)"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check if tag exists
+        id: check-tag
+        run: |
+          if git ls-remote --tags origin "refs/tags/v${{ steps.version.outputs.version }}" | grep -q .; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create and push tag
+        if: steps.check-tag.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.version.outputs.tag }}" -m "Release ${{ steps.version.outputs.tag }}"
+          git push origin "${{ steps.version.outputs.tag }}"
+
       - uses: actions/setup-go@v6.2.0
+        if: steps.check-tag.outputs.exists == 'false'
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
 
-      - uses: goreleaser/goreleaser-action@v6.4.0
+      - name: Run GoReleaser
+        if: steps.check-tag.outputs.exists == 'false'
+        uses: goreleaser/goreleaser-action@v6.4.0
         with:
           distribution: goreleaser
           version: '~> v2'
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          if [[ "${{ steps.check-tag.outputs.exists }}" == "true" ]]; then
+            echo "ℹ️ Tag ${{ steps.version.outputs.tag }} already exists" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Created tag ${{ steps.version.outputs.tag }} and published release" >> $GITHUB_STEP_SUMMARY
+          fi
