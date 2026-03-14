@@ -38,6 +38,7 @@
         let
           inherit (inputs'.gomod2nix.legacyPackages) gomod2nix mkGoEnv buildGoApplication;
 
+          go = pkgs.go_1_26;
           goEnv = mkGoEnv { pwd = ./.; };
 
           version = "0.0.5";
@@ -45,6 +46,7 @@
             pname = "fenced";
             inherit version;
 
+            go = go;
             modules = ./gomod2nix.toml;
             src = lib.cleanSource ./.;
 
@@ -122,7 +124,7 @@
 
             DOCKER = "${pkgs.docker}/bin/docker";
             GINKGO = "${pkgs.ginkgo}/bin/ginkgo";
-            GO = "${pkgs.go}/bin/go";
+            GO = "${go}/bin/go";
             GOMOD2NIX = "${gomod2nix}/bin/gomod2nix";
             GOLANGCI = "${pkgs.golangci-lint}/bin/golangci-lint";
             GORELEASER = "${pkgs.goreleaser}/bin/goreleaser";
