@@ -38,7 +38,7 @@ make deps
 go build
 
 # Run tests
-go tool ginkgo run -r --race --trace --randomize-all
+ginkgo run -r --race --trace --randomize-all
 
 # Run CLI
 go run main.go testdata/markdown.md

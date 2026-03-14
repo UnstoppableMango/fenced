@@ -15,12 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.2
 
-      - uses: actions/setup-go@v6.3.0
+      - uses: cachix/install-nix-action@v31.10.1
         with:
-          go-version-file: go.mod
-          cache-dependency-path: go.sum
+          github_access_token: ${{ github.token }}
 
-      - run: go tool golangci-lint run
+      - uses: cachix/cachix-action@v16
+        with:
+          name: unstoppablemango
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - run: nix develop -c golangci-lint run
 
   build:
     name: Build and Test
@@ -31,13 +35,17 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.2
 
-      - uses: actions/setup-go@v6.3.0
+      - uses: cachix/install-nix-action@v31.10.1
         with:
-          go-version-file: go.mod
-          cache-dependency-path: go.sum
+          github_access_token: ${{ github.token }}
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: unstoppablemango
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - run: >
-          go tool ginkgo run -r
+          nix develop -c ginkgo run -r
           --race
           --trace
           --randomize-all
@@ -114,5 +122,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.2
 
-      - run: make deps
+      - uses: cachix/install-nix-action@v31.10.1
+        with:
+          github_access_token: ${{ github.token }}
+
+      - uses: cachix/cachix-action@v16
+        with:
+          name: unstoppablemango
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - run: nix develop -c make deps
       - run: git diff --exit-code
