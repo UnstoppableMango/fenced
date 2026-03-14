@@ -1,8 +1,8 @@
 GO         ?= go
-GOMOD2NIX  ?= $(GO) tool gomod2nix
-GOLANGCI   ?= $(GO) tool golangci-lint
-GORELEASER ?= $(GO) tool goreleaser
-GINKGO     ?= $(GO) tool ginkgo
+GOMOD2NIX  ?= gomod2nix
+GOLANGCI   ?= golangci-lint
+GORELEASER ?= goreleaser
+GINKGO     ?= ginkgo
 NIX        ?= nix
 WATCHEXEC  ?= watchexec
 
