@@ -86,7 +86,7 @@ func Open(cmd *cobra.Command, path string) (io.ReadCloser, error) {
 // OpenAll returns readers for the input sources (files or stdin).
 func OpenAll(cmd *cobra.Command, args []string) ([]io.ReadCloser, error) {
 	if len(args) == 0 {
-		if term.IsTerminal(int(os.Stdin.Fd())) {
+		if term.IsTerminal(int(os.Stdin.Fd())) { //nolint:gosec // file descriptors are always small non-negative integers
 			return nil, errors.New("stdin is a terminal; provide a file path or pipe input")
 		}
 		in := io.NopCloser(cmd.InOrStdin())
