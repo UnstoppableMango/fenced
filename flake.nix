@@ -100,9 +100,11 @@
 
             version = {
               type = "app";
-              program = lib.getExe (pkgs.writeShellScriptBin "version" ''
-                echo -n "${version}"
-              '');
+              program = lib.getExe (
+                pkgs.writeShellScriptBin "version" ''
+                  echo -n "${version}"
+                ''
+              );
             };
           };
 
@@ -134,6 +136,7 @@
           };
 
           treefmt = {
+            programs.actionlint.enable = true;
             programs.gofmt.enable = true;
             programs.nixfmt.enable = true;
           };

@@ -97,7 +97,7 @@ jobs:
 
       - run: |
           TAGS="$(echo '${{ steps.meta.outputs.tags }}' | tr '\n' ' ')"
-          echo "TAGS=$TAGS" >> $GITHUB_ENV
+          echo "TAGS=$TAGS" >> "$GITHUB_ENV"
 
       - run: |
           VERSION="$(nix run .#version)"
