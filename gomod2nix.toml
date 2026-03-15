@@ -18,8 +18,12 @@ schema = 3
     hash = 'sha256-TEdMxFUPK7IZuCXMufwCkbN+ZZIXSQclljIybFZcByo='
 
   [mod.'charm.land/lipgloss/v2']
-    version = 'v2.0.0-beta.3.0.20251120230642-dcccabe2cd63'
-    hash = 'sha256-159m569iGzKv0XwF/X6mDoI6J+rS11hgPBB/rjKPHzU='
+    version = 'v2.0.1'
+    hash = 'sha256-W0N53P08vNGYbk2nSt5iePFvwTEUpHzEIU+HHtWx2yE='
+
+  [mod.'charm.land/log/v2']
+    version = 'v2.0.0'
+    hash = 'sha256-UpdpM11MkNx20lXC46vtMp7PZ0H0GXvX7ZN9STo5qHE='
 
   [mod.'cloud.google.com/go']
     version = 'v0.123.0'
@@ -518,13 +522,8 @@ schema = 3
     hash = 'sha256-qjiosbeKnhzY0Pfghho29kwEaRgFdbiKR20wOqOhJk8='
 
   [mod.'github.com/charmbracelet/colorprofile']
-<<<<<<< HEAD
     version = 'v0.4.3'
     hash = 'sha256-y+QDUxGOKhugEMQLRUTZYT2C+wKqYHnMLJ44jbh7+JA='
-=======
-    version = 'v0.4.2'
-    hash = 'sha256-AMnmwWjpv/TMb2mbqVXB4RmMVWBsrTFlq1FL8A00olw='
->>>>>>> 092407d (refactor: migrate charmbracelet/log to charm.land/log/v2)
 
   [mod.'github.com/charmbracelet/fang']
     version = 'v0.4.4'
@@ -534,19 +533,9 @@ schema = 3
     version = 'v1.1.0'
     hash = 'sha256-RHsRT2EZ1nDOElxAK+6/DC9XAaGVjDTgPvRh3pyCfY4='
 
-<<<<<<< HEAD
-  [mod.'github.com/charmbracelet/log']
-    version = 'v1.0.0'
-    hash = 'sha256-Veo9gqSs/ZHFNERzXSCtQjovaIwdr8YZkCIJ7xfTEGY='
-
-  [mod.'github.com/charmbracelet/ultraviolet']
-    version = 'v0.0.0-20251120225753-26363bddd922'
-    hash = 'sha256-AkTznkHMq5Q2uFCZ2xyOQxYP9eKDJ4foAvEctqOGH3A='
-=======
   [mod.'github.com/charmbracelet/ultraviolet']
     version = 'v0.0.0-20251205161215-1948445e3318'
     hash = 'sha256-6aKQPruU01181J4ZMf+5ipyAPIbjm2T+sjQxiEPRHEU='
->>>>>>> 092407d (refactor: migrate charmbracelet/log to charm.land/log/v2)
 
   [mod.'github.com/charmbracelet/x/ansi']
     version = 'v0.11.6'
@@ -1353,13 +1342,8 @@ schema = 3
     hash = 'sha256-2UOmo0PDXunRLpiuO7lAXu02DYaDGNCvkiT833KcShY='
 
   [mod.'github.com/mattn/go-runewidth']
-<<<<<<< HEAD
     version = 'v0.0.21'
     hash = 'sha256-JU+ZijAu0o+5jzfLC8ytQzxIAKYr5ow3nCjFf0ehpiA='
-=======
-    version = 'v0.0.19'
-    hash = 'sha256-GpnbKplhX410Q/eIdknvWbYZgdav1keN+7wNUeOSMHE='
->>>>>>> 092407d (refactor: migrate charmbracelet/log to charm.land/log/v2)
 
   [mod.'github.com/mgechev/revive']
     version = 'v1.14.0'
@@ -1934,89 +1918,52 @@ schema = 3
     hash = 'sha256-IdwRBZdEq2/jOfNgcN9eYdOCZ8U+NBj7Z7ZzzBM0jiE='
 
   [mod.'golang.org/x/crypto']
-<<<<<<< HEAD
     version = 'v0.49.0'
     hash = 'sha256-OW321Q3osc/qUOM6BsZGEjOqW1DrgakbIiQACCY/qUI='
 
   [mod.'golang.org/x/exp']
     version = 'v0.0.0-20260312153236-7ab1446f8b90'
     hash = 'sha256-q4a4MK4pVmaazKo9DTOwocH6Fvo8NsO96YeY9FJmNyo='
-=======
-    version = 'v0.48.0'
-    hash = 'sha256-uBIGGSGmWWklRxX6XTOqUECzz165UFY9Y99Ka3pLKAw='
-
-  [mod.'golang.org/x/exp']
-    version = 'v0.0.0-20260212183809-81e46e3db34a'
-    hash = 'sha256-VJpaUeroUlqI72H2ihoH/gmGBofjztKXbG4XC5HZS9o='
->>>>>>> 092407d (refactor: migrate charmbracelet/log to charm.land/log/v2)
 
   [mod.'golang.org/x/exp/typeparams']
     version = 'v0.0.0-20251125195548-87e1e737ad39'
     hash = 'sha256-H92+0L1kY6OHen1YctecROkC2/a/tLx7oWan/XaInA0='
 
   [mod.'golang.org/x/mod']
-<<<<<<< HEAD
     version = 'v0.34.0'
     hash = 'sha256-BJgLn+wh9s/XyS2LDmnXTj4ooR+r0Ew2SlxvJA+6GCs='
 
   [mod.'golang.org/x/net']
     version = 'v0.52.0'
     hash = 'sha256-TQYGkhRhldpi/eGRoDGi4xObh3xh1AuuX2c7uwL/V5Q='
-=======
-    version = 'v0.33.0'
-    hash = 'sha256-NR+ZSeQKbfVP4Cu/SlNIivMa+c1OMyOSMxLSjX+LZJI='
-
-  [mod.'golang.org/x/net']
-    version = 'v0.50.0'
-    hash = 'sha256-A3tvRuVotO4d8S1FX9ri9CpMJacrFJmHebLJ5m9b+Ss='
->>>>>>> 092407d (refactor: migrate charmbracelet/log to charm.land/log/v2)
 
   [mod.'golang.org/x/oauth2']
     version = 'v0.34.0'
     hash = 'sha256-5eqpGGxJ7FJsPmfRek6roeGmkWHBMJaWYXyz8gXJsS4='
 
   [mod.'golang.org/x/sync']
-<<<<<<< HEAD
     version = 'v0.20.0'
     hash = 'sha256-ybcjhCfK6lroUM0yswUvWooW8MOQZBXyiSqoxG6Uy0Y='
-=======
-    version = 'v0.19.0'
-    hash = 'sha256-RbRZ+sKZUurOczGhhzOoY/sojTlta3H9XjL4PXX/cno='
->>>>>>> 092407d (refactor: migrate charmbracelet/log to charm.land/log/v2)
 
   [mod.'golang.org/x/sys']
     version = 'v0.42.0'
     hash = 'sha256-LhNedvUEJbPYyR6EoU91rfOr3DBBoauLOcMcyqghEos='
 
   [mod.'golang.org/x/term']
-<<<<<<< HEAD
     version = 'v0.41.0'
     hash = 'sha256-EQVhfumFhP5O1Qo2PxWpESwC4EnIpfyjMIlMWbobAUQ='
 
   [mod.'golang.org/x/text']
     version = 'v0.35.0'
     hash = 'sha256-MXhEl0aLAyS+4SjQZMipoYKgNEOWdIYnr8h7WtLdTdQ='
-=======
-    version = 'v0.40.0'
-    hash = 'sha256-tu8USqDmcWfwery/+xti/BdUpNLbMNmZeghBNDsj1fQ='
-
-  [mod.'golang.org/x/text']
-    version = 'v0.34.0'
-    hash = 'sha256-wGKd1JkeiFROibvo2kkAuQ7JajSIfV4utGaoGbTQhQM='
->>>>>>> 092407d (refactor: migrate charmbracelet/log to charm.land/log/v2)
 
   [mod.'golang.org/x/time']
     version = 'v0.14.0'
     hash = 'sha256-fVjpq0ieUHVEOTSElDVleMWvfdcqojZchqdUXiC7NnY='
 
   [mod.'golang.org/x/tools']
-<<<<<<< HEAD
     version = 'v0.43.0'
     hash = 'sha256-CqwqQl9inMT0/5LJ8hmV3HNR1XdI/xBFbi3305VJUlo='
-=======
-    version = 'v0.42.0'
-    hash = 'sha256-JTwzoJeqCW5aphjQR0SItRGov7dKVbFk3a4V2U2+vd4='
->>>>>>> 092407d (refactor: migrate charmbracelet/log to charm.land/log/v2)
 
   [mod.'golang.org/x/tools/go/vcs']
     version = 'v0.1.0-deprecated'
