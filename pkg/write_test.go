@@ -2,6 +2,8 @@ package fenced_test
 
 import (
 	"bytes"
+	"errors"
+	"io"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -28,6 +30,15 @@ var _ = Describe("Write", func() {
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(n).To(Equal(4))
+	})
+
+	It("should return an error when the writer fails", func() {
+		pr, pw := io.Pipe()
+		pr.Close()
+
+		_, err := fenced.Write(pw, fenced.Block{Content: "x"})
+
+		Expect(err).To(MatchError(io.ErrClosedPipe))
 	})
 })
 
@@ -74,6 +85,15 @@ var _ = Describe("WriteAll", func() {
 		Expect(n).To(Equal(4))
 	})
 
+	It("should return an error when the writer fails", func() {
+		pr, pw := io.Pipe()
+		pr.Close()
+
+		_, err := fenced.WriteAll(pw, []fenced.Block{{Content: "x"}})
+
+		Expect(err).To(MatchError(io.ErrClosedPipe))
+	})
+
 	Describe("WithDelimiter", func() {
 		It("should not write delimiter before the first block", func() {
 			blocks := []fenced.Block{{Content: "package main\n"}}
@@ -110,6 +130,37 @@ var _ = Describe("WriteAll", func() {
 
 			Expect(err).NotTo(HaveOccurred())
 			Expect(buf.String()).To(Equal("a\n===\nb\n===\nc\n"))
+		})
+
+		It("should return an error when writing delimiter fails", func() {
+			pr, pw := io.Pipe()
+			go func() {
+				buf := make([]byte, 100)
+				pr.Read(buf) // drain first block write
+				pr.CloseWithError(errors.New("delimiter error"))
+			}()
+
+			blocks := []fenced.Block{{Content: "a\n"}, {Content: "b\n"}}
+			_, err := fenced.WriteAll(pw, blocks, fenced.WithDelimiter("---"))
+			pw.Close()
+
+			Expect(err).To(MatchError("delimiter error"))
+		})
+
+		It("should return an error when writing implicit newline fails", func() {
+			pr, pw := io.Pipe()
+			go func() {
+				buf := make([]byte, 100)
+				pr.Read(buf) // drain first block write
+				pr.Read(buf) // drain delimiter write
+				pr.CloseWithError(errors.New("newline error"))
+			}()
+
+			blocks := []fenced.Block{{Content: "a\n"}, {Content: "b\n"}}
+			_, err := fenced.WriteAll(pw, blocks, fenced.WithDelimiter("---"))
+			pw.Close()
+
+			Expect(err).To(MatchError("newline error"))
 		})
 	})
 
