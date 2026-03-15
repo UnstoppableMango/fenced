@@ -53,7 +53,7 @@ bin/image.tar.gz: bin/stream_image.sh
 	mkdir -p ${@D} && $< >$@
 
 bin/stream_image.sh: ${GO_SRC}
-	$(NIX) build .#ctr --out-link $@
+	mkdir -p ${@D} && $(NIX) build .#ctr --out-link $@
 
 go.sum: go.mod ${GO_SRC}
 	$(GO) mod tidy
