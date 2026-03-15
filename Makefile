@@ -4,13 +4,17 @@ GOLANGCI   ?= golangci-lint
 GORELEASER ?= goreleaser
 GINKGO     ?= ginkgo
 NIX        ?= nix
+PODMAN     ?= podman
 WATCHEXEC  ?= watchexec
 
 GO_SRC ?= $(shell find . -name '*.go')
 
 build: bin/fenced
 deps tidy: go.sum gomod2nix.toml
-container ctr: bin/image.tar.gz
+container ctr docker: bin/image.tar.gz
+
+load: bin/stream_image.sh
+	$< | $(PODMAN) load
 
 check:
 	$(NIX) flake check
@@ -39,14 +43,17 @@ clean:
 
 ifneq (${IN_NIX_SHELL},)
 bin/fenced: result
-	mkdir -p $(dir $@) && ln -s $(abspath $<)/bin/fenced $@
+	mkdir -p ${@D} && ln -s $(abspath $<)/bin/fenced $@
 else
 bin/fenced: ${GO_SRC}
 	$(GO) build -o $@
 endif
 
-bin/image.tar.gz: ${GO_SRC}
-	$(NIX) build .#ctr --out-link $@
+bin/image.tar.gz: bin/stream_image.sh
+	mkdir -p ${@D} && $< >$@
+
+bin/stream_image.sh: ${GO_SRC}
+	mkdir -p ${@D} && $(NIX) build .#ctr --out-link $@
 
 go.sum: go.mod ${GO_SRC}
 	$(GO) mod tidy

@@ -69,7 +69,7 @@
             };
           };
 
-          ctr = pkgs.dockerTools.buildLayeredImage {
+          ctr = pkgs.dockerTools.streamLayeredImage {
             name = "fenced";
             tag = version;
 
