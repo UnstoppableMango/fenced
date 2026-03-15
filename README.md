@@ -109,14 +109,23 @@ Install into your profile:
 nix profile install github:UnstoppableMango/fenced
 ```
 
-As a flake:
+As a flake (NixOS configuration):
 
 ```nix
 {
-  inputs.fenced.url = "github:UnstoppableMango/fenced";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    fenced.url = "github:UnstoppableMango/fenced";
+  };
 
-  # In your configuration:
-  environment.systemPackages = [ inputs.fenced.packages.${system}.default ];
+  outputs = { nixpkgs, fenced, ... }: {
+    nixosConfigurations.mySystem = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [{
+        environment.systemPackages = [ fenced.packages.x86_64-linux.default ];
+      }];
+    };
+  };
 }
 ```
 
@@ -124,13 +133,20 @@ Or use in a `devShell`:
 
 ```nix
 {
-  inputs.fenced.url = "github:UnstoppableMango/fenced";
-
-  outputs = { fenced, ... }: {
-    devShells.default = pkgs.mkShell {
-      packages = [ fenced.packages.${system}.default ];
-    };
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    fenced.url = "github:UnstoppableMango/fenced";
   };
+
+  outputs = { nixpkgs, fenced, ... }:
+    let
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
+    in {
+      devShells.${system}.default = pkgs.mkShell {
+        packages = [ fenced.packages.${system}.default ];
+      };
+    };
 }
 ```
 
