@@ -95,6 +95,45 @@ $ fenced file1.md - file2.md < input.md
 # Reads file1.md, then stdin, then file2.md
 ```
 
+### Nix
+
+Run directly without installing:
+
+```shell
+nix run github:UnstoppableMango/fenced -- testdata/markdown.md
+```
+
+Install into your profile:
+
+```shell
+nix profile install github:UnstoppableMango/fenced
+```
+
+As a flake:
+
+```nix
+{
+  inputs.fenced.url = "github:UnstoppableMango/fenced";
+
+  # In your configuration:
+  environment.systemPackages = [ inputs.fenced.packages.${system}.default ];
+}
+```
+
+Or use in a `devShell`:
+
+```nix
+{
+  inputs.fenced.url = "github:UnstoppableMango/fenced";
+
+  outputs = { fenced, ... }: {
+    devShells.default = pkgs.mkShell {
+      packages = [ fenced.packages.${system}.default ];
+    };
+  };
+}
+```
+
 ### Docker
 
 ```shell
