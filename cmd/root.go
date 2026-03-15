@@ -34,6 +34,11 @@ var rootCmd = &cobra.Command{
 			cli.Fail(err)
 		}
 
+		noImplicitNewline, err := cmd.Flags().GetBool("no-implicit-newline")
+		if err != nil {
+			cli.Fail(err)
+		}
+
 		out := cmd.OutOrStdout()
 		first := true
 		for _, in := range readers {
@@ -46,6 +51,11 @@ var rootCmd = &cobra.Command{
 				if !first && delimiter != "" {
 					if _, err := io.WriteString(out, delimiter); err != nil {
 						cli.Fail(err)
+					}
+					if !noImplicitNewline {
+						if _, err := io.WriteString(out, "\n"); err != nil {
+							cli.Fail(err)
+						}
 					}
 				}
 				first = false
@@ -65,6 +75,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.Flags().StringP("delimiter", "d", "", "delimiter to insert between code blocks")
+	rootCmd.Flags().BoolP("no-implicit-newline", "N", false, "disable implicit newline appended after delimiter")
 }
 
 // Execute runs the root command.
