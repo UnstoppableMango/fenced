@@ -44,21 +44,18 @@ var rootCmd = &cobra.Command{
 			opts = append(opts, fenced.WithNoImplicitNewline)
 		}
 
-		var allBlocks []fenced.Block
+		w := fenced.NewWriter(cmd.OutOrStdout(), opts...)
 		for _, in := range readers {
 			blocks, err := fenced.Parse(in)
 			if err != nil {
 				cli.Fail(err)
 			}
-			allBlocks = append(allBlocks, blocks...)
+			if _, err := w.WriteAll(blocks); err != nil {
+				cli.Fail(err)
+			}
 			if err := in.Close(); err != nil {
 				log.Warn("Failed to close reader", "error", err)
 			}
-		}
-
-		out := cmd.OutOrStdout()
-		if _, err = fenced.WriteAll(out, allBlocks, opts...); err != nil {
-			cli.Fail(err)
 		}
 	},
 }

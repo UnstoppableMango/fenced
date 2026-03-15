@@ -11,6 +11,23 @@ import (
 	fenced "github.com/unstoppablemango/fenced/pkg"
 )
 
+var _ = Describe("Writer", func() {
+	Describe("Write", func() {
+		It("should insert delimiter between blocks written in separate Write calls", func() {
+			var buf bytes.Buffer
+			w := fenced.NewWriter(&buf, fenced.WithDelimiter("---"))
+
+			_, err := w.Write(fenced.Block{Content: "a\n"})
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = w.Write(fenced.Block{Content: "b\n"})
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(buf.String()).To(Equal("a\n---\nb\n"))
+		})
+	})
+})
+
 var _ = Describe("Write", func() {
 	It("should write the block content", func() {
 		block := fenced.Block{Content: "package main\n"}
@@ -94,6 +111,22 @@ var _ = Describe("WriteAll", func() {
 		Expect(err).To(MatchError(io.ErrClosedPipe))
 	})
 
+	It("should return bytes written for successful blocks before a failure", func() {
+		pr, pw := io.Pipe()
+		go func() {
+			buf := make([]byte, 2)
+			_, _ = pr.Read(buf) // drain "a\n"
+			pr.CloseWithError(errors.New("write error"))
+		}()
+
+		blocks := []fenced.Block{{Content: "a\n"}, {Content: "b\n"}}
+		n, err := fenced.WriteAll(pw, blocks)
+		_ = pw.Close()
+
+		Expect(err).To(HaveOccurred())
+		Expect(n).To(Equal(2))
+	})
+
 	Describe("WithDelimiter", func() {
 		It("should not write delimiter before the first block", func() {
 			blocks := []fenced.Block{{Content: "package main\n"}}
@@ -161,6 +194,40 @@ var _ = Describe("WriteAll", func() {
 			_ = pw.Close()
 
 			Expect(err).To(MatchError("newline error"))
+		})
+
+		It("should return bytes written before delimiter write failure", func() {
+			pr, pw := io.Pipe()
+			go func() {
+				buf := make([]byte, 2)
+				_, _ = pr.Read(buf) // drain "a\n"
+				pr.CloseWithError(errors.New("delimiter error"))
+			}()
+
+			blocks := []fenced.Block{{Content: "a\n"}, {Content: "b\n"}}
+			n, err := fenced.WriteAll(pw, blocks, fenced.WithDelimiter("---"))
+			_ = pw.Close()
+
+			Expect(err).To(HaveOccurred())
+			Expect(n).To(Equal(2))
+		})
+
+		It("should return bytes written before block content write failure", func() {
+			pr, pw := io.Pipe()
+			go func() {
+				buf := make([]byte, 100)
+				_, _ = pr.Read(buf) // drain "a\n"
+				_, _ = pr.Read(buf) // drain "---"
+				_, _ = pr.Read(buf) // drain "\n"
+				pr.CloseWithError(errors.New("content error"))
+			}()
+
+			blocks := []fenced.Block{{Content: "a\n"}, {Content: "b\n"}}
+			n, err := fenced.WriteAll(pw, blocks, fenced.WithDelimiter("---"))
+			_ = pw.Close()
+
+			Expect(err).To(HaveOccurred())
+			Expect(n).To(Equal(6)) // "a\n"(2) + "---"(3) + "\n"(1)
 		})
 	})
 

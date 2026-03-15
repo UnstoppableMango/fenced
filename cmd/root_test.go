@@ -53,6 +53,25 @@ var _ = Describe("OpenAll", func() {
 		Expect(readers).To(HaveLen(1))
 	})
 
+	It("should use cmd.InOrStdin when os.Stdin is replaced with a non-terminal", func() {
+		r, w, err := os.Pipe()
+		Expect(err).NotTo(HaveOccurred())
+		defer func() { Expect(r.Close()).To(Succeed()) }()
+		defer func() { Expect(w.Close()).To(Succeed()) }()
+
+		old := os.Stdin
+		os.Stdin = r
+		defer func() { os.Stdin = old }()
+
+		c := &cobra.Command{}
+		c.SetIn(strings.NewReader("hello"))
+
+		readers, err := cmd.OpenAll(c, []string{})
+
+		Expect(err).NotTo(HaveOccurred())
+		Expect(readers).To(HaveLen(1))
+	})
+
 	It("should open files for each path argument", func() {
 		wd, err := os.Getwd()
 		Expect(err).NotTo(HaveOccurred())

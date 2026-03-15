@@ -11,6 +11,7 @@ type Writer struct {
 	w                 io.Writer
 	delimiter         string
 	noImplicitNewline bool
+	wrote             bool
 }
 
 // NewWriter creates a new Writer that writes to w with the given options applied.
@@ -24,20 +25,33 @@ func (w *Writer) implicitNewline() bool {
 	return !w.noImplicitNewline
 }
 
-func (w *Writer) Write(b Block) (n int, err error) {
-	return w.write(b, true)
+func (w *Writer) Write(blocks ...Block) (n int, err error) {
+	for _, b := range blocks {
+		nn, err := w.write(b)
+		n += nn
+		if err != nil {
+			return n, err
+		}
+	}
+
+	return
 }
 
-func (w *Writer) write(b Block, first bool) (n int, err error) {
-	if !first && w.delimiter != "" {
+// WriteAll writes all blocks to the underlying writer.
+func (w *Writer) WriteAll(blocks []Block) (n int, err error) {
+	return w.Write(blocks...)
+}
+
+func (w *Writer) write(b Block) (n int, err error) {
+	if w.wrote && w.delimiter != "" {
 		if nn, err := io.WriteString(w.w, w.delimiter); err != nil {
-			return 0, err
+			return n, err
 		} else {
 			n += nn
 		}
 		if w.implicitNewline() {
 			if nn, err := io.WriteString(w.w, "\n"); err != nil {
-				return 0, err
+				return n, err
 			} else {
 				n += nn
 			}
@@ -45,11 +59,12 @@ func (w *Writer) write(b Block, first bool) (n int, err error) {
 	}
 
 	if nn, err := io.WriteString(w.w, b.String()); err != nil {
-		return 0, err
+		return n, err
 	} else {
 		n += nn
 	}
 
+	w.wrote = true
 	return
 }
 
@@ -70,16 +85,7 @@ func WithNoImplicitNewline(o *Writer) {
 
 // WriteAll writes all blocks to w using the given options.
 func WriteAll(w io.Writer, blocks []Block, options ...Option) (n int, err error) {
-	fs := NewWriter(w, options...)
-	for i, b := range blocks {
-		if nn, err := fs.write(b, i == 0); err != nil {
-			return 0, err
-		} else {
-			n += nn
-		}
-	}
-
-	return
+	return NewWriter(w, options...).WriteAll(blocks)
 }
 
 // Write writes a single block to w using the given options.
