@@ -18,8 +18,12 @@ schema = 3
     hash = 'sha256-TEdMxFUPK7IZuCXMufwCkbN+ZZIXSQclljIybFZcByo='
 
   [mod.'charm.land/lipgloss/v2']
-    version = 'v2.0.0-beta.3.0.20251120230642-dcccabe2cd63'
-    hash = 'sha256-159m569iGzKv0XwF/X6mDoI6J+rS11hgPBB/rjKPHzU='
+    version = 'v2.0.1'
+    hash = 'sha256-W0N53P08vNGYbk2nSt5iePFvwTEUpHzEIU+HHtWx2yE='
+
+  [mod.'charm.land/log/v2']
+    version = 'v2.0.0'
+    hash = 'sha256-UpdpM11MkNx20lXC46vtMp7PZ0H0GXvX7ZN9STo5qHE='
 
   [mod.'cloud.google.com/go']
     version = 'v0.123.0'
@@ -529,13 +533,9 @@ schema = 3
     version = 'v1.1.0'
     hash = 'sha256-RHsRT2EZ1nDOElxAK+6/DC9XAaGVjDTgPvRh3pyCfY4='
 
-  [mod.'github.com/charmbracelet/log']
-    version = 'v1.0.0'
-    hash = 'sha256-Veo9gqSs/ZHFNERzXSCtQjovaIwdr8YZkCIJ7xfTEGY='
-
   [mod.'github.com/charmbracelet/ultraviolet']
-    version = 'v0.0.0-20251120225753-26363bddd922'
-    hash = 'sha256-AkTznkHMq5Q2uFCZ2xyOQxYP9eKDJ4foAvEctqOGH3A='
+    version = 'v0.0.0-20251205161215-1948445e3318'
+    hash = 'sha256-6aKQPruU01181J4ZMf+5ipyAPIbjm2T+sjQxiEPRHEU='
 
   [mod.'github.com/charmbracelet/x/ansi']
     version = 'v0.11.6'

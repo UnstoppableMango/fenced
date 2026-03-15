@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/charmbracelet/log"
+	"charm.land/log/v2"
 	"github.com/spf13/cobra"
 	"github.com/unmango/go/cli"
 	fenced "github.com/unstoppablemango/fenced/pkg"
