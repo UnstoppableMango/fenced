@@ -75,8 +75,18 @@ var _ = Describe("E2e", func() {
 		})
 
 		It("should insert delimiter between multiple blocks", func() {
-			cmd := exec.Command(binPath, "-d", "\n===\n", filepath.Join(testdata, "multiple-blocks.md"))
+			cmd := exec.Command(binPath, "-d", "\n===", filepath.Join(testdata, "multiple-blocks.md"))
 			expected := "package main\n\n===\nfunc main() {}\n"
+
+			ses := run(cmd)
+
+			Eventually(ses).Should(gexec.Exit(0))
+			Expect(ses.Out.Contents()).To(Equal([]byte(expected)))
+		})
+
+		It("should not append newline after delimiter when --no-implicit-newline is set", func() {
+			cmd := exec.Command(binPath, "-d", "\n===", "-N", filepath.Join(testdata, "multiple-blocks.md"))
+			expected := "package main\n\n===func main() {}\n"
 
 			ses := run(cmd)
 
@@ -108,7 +118,7 @@ var _ = Describe("E2e", func() {
 
 		It("should insert delimiter between blocks when specified", func() {
 			cmd := exec.Command(binPath,
-				"-d", "\n---\n",
+				"-d", "\n---",
 				filepath.Join(testdata, "markdown.md"),
 				filepath.Join(testdata, "python.md"))
 
@@ -128,7 +138,7 @@ var _ = Describe("E2e", func() {
 			ses := run(cmd)
 
 			Eventually(ses).Should(gexec.Exit(0))
-			expected := "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n | def hello():\n    print(\"Hello from Python\")\n"
+			expected := "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n | \ndef hello():\n    print(\"Hello from Python\")\n"
 			Expect(ses.Out.Contents()).To(Equal([]byte(expected)))
 		})
 	})

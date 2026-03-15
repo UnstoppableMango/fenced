@@ -55,12 +55,25 @@ $ fenced file1.md file2.md file3.md
 Add a delimiter between code blocks:
 
 ```shell
-$ fenced -d $'\n---\n' file1.md file2.md
+$ fenced -d $'\n---' file1.md file2.md
 # First block
+
 ---
 # Second block
+
 ---
 # Third block
+```
+
+An implicit newline is appended after the delimiter by default. Use `-N`/`--no-implicit-newline` to disable this:
+
+```shell
+$ fenced -d $'\n---' -N file1.md file2.md
+# First block
+
+---# Second block
+
+---# Third block
 ```
 
 Or pipe content to stdin:
