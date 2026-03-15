@@ -34,7 +34,7 @@ var _ = Describe("Write", func() {
 
 	It("should return an error when the writer fails", func() {
 		pr, pw := io.Pipe()
-		pr.Close()
+		_ = pr.Close()
 
 		_, err := fenced.Write(pw, fenced.Block{Content: "x"})
 
@@ -87,7 +87,7 @@ var _ = Describe("WriteAll", func() {
 
 	It("should return an error when the writer fails", func() {
 		pr, pw := io.Pipe()
-		pr.Close()
+		_ = pr.Close()
 
 		_, err := fenced.WriteAll(pw, []fenced.Block{{Content: "x"}})
 
@@ -136,13 +136,13 @@ var _ = Describe("WriteAll", func() {
 			pr, pw := io.Pipe()
 			go func() {
 				buf := make([]byte, 100)
-				pr.Read(buf) // drain first block write
+				_, _ = pr.Read(buf) // drain first block write
 				pr.CloseWithError(errors.New("delimiter error"))
 			}()
 
 			blocks := []fenced.Block{{Content: "a\n"}, {Content: "b\n"}}
 			_, err := fenced.WriteAll(pw, blocks, fenced.WithDelimiter("---"))
-			pw.Close()
+			_ = pw.Close()
 
 			Expect(err).To(MatchError("delimiter error"))
 		})
@@ -151,14 +151,14 @@ var _ = Describe("WriteAll", func() {
 			pr, pw := io.Pipe()
 			go func() {
 				buf := make([]byte, 100)
-				pr.Read(buf) // drain first block write
-				pr.Read(buf) // drain delimiter write
+				_, _ = pr.Read(buf) // drain first block write
+				_, _ = pr.Read(buf) // drain delimiter write
 				pr.CloseWithError(errors.New("newline error"))
 			}()
 
 			blocks := []fenced.Block{{Content: "a\n"}, {Content: "b\n"}}
 			_, err := fenced.WriteAll(pw, blocks, fenced.WithDelimiter("---"))
-			pw.Close()
+			_ = pw.Close()
 
 			Expect(err).To(MatchError("newline error"))
 		})

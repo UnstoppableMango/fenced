@@ -32,7 +32,7 @@ var _ = Describe("Open", func() {
 
 		Expect(err).NotTo(HaveOccurred())
 		Expect(rc).NotTo(BeNil())
-		rc.Close()
+		Expect(rc.Close()).To(Succeed())
 	})
 
 	It("should return an error for a non-existent file", func() {
@@ -63,7 +63,7 @@ var _ = Describe("OpenAll", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(readers).To(HaveLen(1))
 		for _, r := range readers {
-			r.Close()
+			Expect(r.Close()).To(Succeed())
 		}
 	})
 
@@ -86,7 +86,7 @@ var _ = Describe("OpenAll", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(readers).To(HaveLen(2))
 		for _, r := range readers {
-			r.Close()
+			Expect(r.Close()).To(Succeed())
 		}
 	})
 })
