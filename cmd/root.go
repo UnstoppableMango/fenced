@@ -29,42 +29,30 @@ var rootCmd = &cobra.Command{
 			cli.Fail(err)
 		}
 
+		var opts []fenced.Option
 		delimiter, err := cmd.Flags().GetString("delimiter")
 		if err != nil {
 			cli.Fail(err)
 		}
+		opts = append(opts, fenced.WithDelimiter(delimiter))
 
 		noImplicitNewline, err := cmd.Flags().GetBool("no-implicit-newline")
 		if err != nil {
 			cli.Fail(err)
 		}
+		if noImplicitNewline {
+			opts = append(opts, fenced.WithNoImplicitNewline)
+		}
 
-		out := cmd.OutOrStdout()
-		first := true
+		w := fenced.NewWriter(cmd.OutOrStdout(), opts...)
 		for _, in := range readers {
 			blocks, err := fenced.Parse(in)
 			if err != nil {
 				cli.Fail(err)
 			}
-
-			for _, b := range blocks {
-				if !first && delimiter != "" {
-					if _, err := io.WriteString(out, delimiter); err != nil {
-						cli.Fail(err)
-					}
-					if !noImplicitNewline {
-						if _, err := io.WriteString(out, "\n"); err != nil {
-							cli.Fail(err)
-						}
-					}
-				}
-				first = false
-
-				if _, err := io.WriteString(out, b.String()); err != nil {
-					cli.Fail(err)
-				}
+			if _, err := w.WriteAll(blocks); err != nil {
+				cli.Fail(err)
 			}
-
 			if err := in.Close(); err != nil {
 				log.Warn("Failed to close reader", "error", err)
 			}

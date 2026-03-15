@@ -1,7 +1,9 @@
 package fenced_test
 
 import (
+	"errors"
 	"strings"
+	"testing/iotest"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -76,6 +78,14 @@ var _ = Describe("Fence", func() {
 
 			Expect(err).NotTo(HaveOccurred())
 			Expect(codeBlocks).To(BeEmpty())
+		})
+
+		It("should return an error when the reader fails", func() {
+			r := iotest.ErrReader(errors.New("read error"))
+
+			_, err := fenced.Parse(r)
+
+			Expect(err).To(MatchError("read error"))
 		})
 	})
 })

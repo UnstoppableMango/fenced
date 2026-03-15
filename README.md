@@ -135,3 +135,51 @@ func main() {
     }
 }
 ```
+
+Write a single block to an `io.Writer`:
+
+```go
+import (
+    "os"
+
+    fenced "github.com/unstoppablemango/fenced/pkg"
+)
+
+func main() {
+    block := fenced.Block{
+        Lang:    "go",
+        Content: "fmt.Println(\"Hello, World!\")\n",
+    }
+
+    if _, err := fenced.Write(os.Stdout, block); err != nil {
+        panic(err)
+    }
+}
+```
+
+Write multiple blocks with a delimiter using `WriteAll`:
+
+```go
+import (
+    "os"
+
+    fenced "github.com/unstoppablemango/fenced/pkg"
+)
+
+func main() {
+    f, err := os.Open("testdata/markdown.md")
+    if err != nil {
+        panic(err)
+    }
+    defer f.Close()
+
+    blocks, err := fenced.Parse(f)
+    if err != nil {
+        panic(err)
+    }
+
+    if _, err := fenced.WriteAll(os.Stdout, blocks, fenced.WithDelimiter("---")); err != nil {
+        panic(err)
+    }
+}
+```
