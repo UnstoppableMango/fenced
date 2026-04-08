@@ -24,7 +24,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: cachix/install-nix-action@v31.10.1
+      - uses: cachix/install-nix-action@v31.10.4
         with:
           github_access_token: ${{ github.token }}
 

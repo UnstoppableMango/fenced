@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.2
 
-      - uses: cachix/install-nix-action@v31.10.1
+      - uses: cachix/install-nix-action@v31.10.4
         with:
           github_access_token: ${{ github.token }}
 
@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.2
 
-      - uses: cachix/install-nix-action@v31.10.1
+      - uses: cachix/install-nix-action@v31.10.4
         with:
           github_access_token: ${{ github.token }}
 
@@ -71,7 +71,7 @@ jobs:
         with:
           github-token: ${{ github.token }}
 
-      - uses: cachix/install-nix-action@v31.10.1
+      - uses: cachix/install-nix-action@v31.10.4
         with:
           github_access_token: ${{ github.token }}
 
@@ -121,7 +121,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.2
 
-      - uses: cachix/install-nix-action@v31.10.1
+      - uses: cachix/install-nix-action@v31.10.4
         with:
           github_access_token: ${{ github.token }}
 
