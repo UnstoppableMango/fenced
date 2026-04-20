@@ -13,13 +13,13 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: cachix/install-nix-action@v31.10.4
+      - uses: cachix/install-nix-action@616559265b40713947b9c190a8ff4b507b5df49b # v31.10.4
         with:
           github_access_token: ${{ github.token }}
 
-      - uses: cachix/cachix-action@v17
+      - uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
         with:
           name: unstoppablemango
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -33,13 +33,13 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: cachix/install-nix-action@v31.10.4
+      - uses: cachix/install-nix-action@616559265b40713947b9c190a8ff4b507b5df49b # v31.10.4
         with:
           github_access_token: ${{ github.token }}
 
-      - uses: cachix/cachix-action@v17
+      - uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
         with:
           name: unstoppablemango
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -52,7 +52,7 @@ jobs:
           --github-output
           --cover
 
-      - uses: codecov/codecov-action@v6.0.0
+      - uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
         with:
           use_oidc: true
           fail_ci_if_error: true
@@ -65,17 +65,17 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: redhat-actions/podman-install@main
+      - uses: redhat-actions/podman-install@0b0ebeccb256851665136971d7782ba7180773df # main
         with:
           github-token: ${{ github.token }}
 
-      - uses: cachix/install-nix-action@v31.10.4
+      - uses: cachix/install-nix-action@616559265b40713947b9c190a8ff4b507b5df49b # v31.10.4
         with:
           github_access_token: ${{ github.token }}
 
-      - uses: cachix/cachix-action@v17
+      - uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
         with:
           name: unstoppablemango
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -83,7 +83,7 @@ jobs:
       - run: make load
 
       - id: meta
-        uses: docker/metadata-action@v6.0.0
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6.0.0
         with:
           images: |
             ghcr.io/${{ github.repository }}
@@ -102,7 +102,7 @@ jobs:
           VERSION="$(nix run .#version)"
           podman image tag "fenced:${VERSION}" ${{ env.TAGS }}
 
-      - uses: redhat-actions/podman-login@v1
+      - uses: redhat-actions/podman-login@4934294ad0449894bcd1e9f191899d7292469603 # v1
         if: github.ref_name == 'main'
         with:
           registry: ghcr.io
@@ -119,13 +119,13 @@ jobs:
       contents: read
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: cachix/install-nix-action@v31.10.4
+      - uses: cachix/install-nix-action@616559265b40713947b9c190a8ff4b507b5df49b # v31.10.4
         with:
           github_access_token: ${{ github.token }}
 
-      - uses: cachix/cachix-action@v17
+      - uses: cachix/cachix-action@1eb2ef646ac0255473d23a5907ad7b04ce94065c # v17
         with:
           name: unstoppablemango
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
