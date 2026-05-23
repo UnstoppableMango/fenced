@@ -14,7 +14,7 @@ require (
 	github.com/onsi/ginkgo/v2 v2.29.0
 	github.com/onsi/gomega v1.41.0
 	github.com/spf13/cobra v1.10.2
-	github.com/unmango/go v0.16.5
+	github.com/unmango/go v0.16.6
 	golang.org/x/term v0.43.0
 )
 
