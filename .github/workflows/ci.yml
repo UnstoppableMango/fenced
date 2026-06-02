@@ -67,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: redhat-actions/podman-install@50a7dd02e78b3747c2a19f110ac266e7306faec5 # main
+      - uses: redhat-actions/podman-install@aea6ff44f2a4a82da13d22061ce73443a125925d # main
         with:
           github-token: ${{ github.token }}
 
