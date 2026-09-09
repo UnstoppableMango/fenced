@@ -11,7 +11,7 @@ tool (
 
 require (
 	charm.land/log/v2 v2.0.1
-	github.com/onsi/ginkgo/v2 v2.32.1
+	github.com/onsi/ginkgo/v2 v2.32.2
 	github.com/onsi/gomega v1.43.0
 	github.com/spf13/cobra v1.10.2
 	github.com/unmango/go v0.16.6
