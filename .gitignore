@@ -1,0 +1,12 @@
+.envrc
+.direnv/
+.vscode/*
+!.vscode/extensions.json
+.zed/*
+result
+bin/
+*cover*
+dist/
+/fenced
+*.test
+.claude/
