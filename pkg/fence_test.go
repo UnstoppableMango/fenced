@@ -2,6 +2,7 @@ package fenced_test
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"testing/iotest"
 
@@ -11,20 +12,22 @@ import (
 	fenced "github.com/unstoppablemango/fenced/pkg"
 )
 
+const helloProgram = "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n"
+
 var _ = Describe("Fence", func() {
 	Describe("Block", func() {
 		It("should return the content as a string", func() {
-			block := fenced.Block{Content: "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n"}
+			block := fenced.Block{Content: helloProgram}
 
-			Expect(block.String()).To(Equal("import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n"))
+			Expect(block.String()).To(Equal(helloProgram))
 		})
 	})
 
 	Describe("Parse", func() {
 		It("should parse a single code block", func() {
-			input := "```\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n```"
+			input := fmt.Sprint("```\n", helloProgram, "```")
 			expected := []fenced.Block{{
-				Content: "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n",
+				Content: helloProgram,
 			}}
 
 			codeBlocks, err := fenced.Parse(strings.NewReader(input))
@@ -34,9 +37,9 @@ var _ = Describe("Fence", func() {
 		})
 
 		It("should parse a single code block with language hint", func() {
-			input := "```go\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n```"
+			input := fmt.Sprint("```go\n", helloProgram, "```")
 			expected := []fenced.Block{{
-				Content: "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n",
+				Content: helloProgram,
 				Lang:    "go",
 			}}
 
@@ -47,10 +50,10 @@ var _ = Describe("Fence", func() {
 		})
 
 		It("should parse a multiple code blocks", func() {
-			input := "```\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n```\n```\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n```"
+			input := fmt.Sprint("```\n", helloProgram, "```\n```\n", helloProgram, "```")
 			expected := []fenced.Block{
-				{Content: "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n"},
-				{Content: "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n"},
+				{Content: helloProgram},
+				{Content: helloProgram},
 			}
 
 			codeBlocks, err := fenced.Parse(strings.NewReader(input))
@@ -60,9 +63,9 @@ var _ = Describe("Fence", func() {
 		})
 
 		It("should parse a single code block with tildes", func() {
-			input := "~~~\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n~~~"
+			input := fmt.Sprint("~~~\n", helloProgram, "~~~")
 			expected := []fenced.Block{{
-				Content: "import \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n",
+				Content: helloProgram,
 			}}
 
 			codeBlocks, err := fenced.Parse(strings.NewReader(input))
@@ -72,7 +75,8 @@ var _ = Describe("Fence", func() {
 		})
 
 		It("should parse an unclosed code block", func() {
-			input := "```\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n"
+			// input := "```\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}\n"
+			input := fmt.Sprint("```\n", helloProgram)
 
 			codeBlocks, err := fenced.Parse(strings.NewReader(input))
 

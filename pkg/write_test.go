@@ -11,6 +11,11 @@ import (
 	fenced "github.com/unstoppablemango/fenced/pkg"
 )
 
+const (
+	aBlock = "package main\n"
+	bBlock = "func main() {}\n"
+)
+
 var _ = Describe("Writer", func() {
 	Describe("Write", func() {
 		It("should insert delimiter between blocks written in separate Write calls", func() {
@@ -30,13 +35,13 @@ var _ = Describe("Writer", func() {
 
 var _ = Describe("Write", func() {
 	It("should write the block content", func() {
-		block := fenced.Block{Content: "package main\n"}
+		block := fenced.Block{Content: aBlock}
 		var buf bytes.Buffer
 
 		_, err := fenced.Write(&buf, block)
 
 		Expect(err).NotTo(HaveOccurred())
-		Expect(buf.String()).To(Equal("package main\n"))
+		Expect(buf.String()).To(Equal(aBlock))
 	})
 
 	It("should return the number of bytes written", func() {
@@ -61,26 +66,26 @@ var _ = Describe("Write", func() {
 
 var _ = Describe("WriteAll", func() {
 	It("should write a single block", func() {
-		blocks := []fenced.Block{{Content: "package main\n"}}
+		blocks := []fenced.Block{{Content: aBlock}}
 		var buf bytes.Buffer
 
 		_, err := fenced.WriteAll(&buf, blocks)
 
 		Expect(err).NotTo(HaveOccurred())
-		Expect(buf.String()).To(Equal("package main\n"))
+		Expect(buf.String()).To(Equal(aBlock))
 	})
 
 	It("should write multiple blocks without delimiter", func() {
 		blocks := []fenced.Block{
-			{Content: "package main\n"},
-			{Content: "func main() {}\n"},
+			{Content: aBlock},
+			{Content: bBlock},
 		}
 		var buf bytes.Buffer
 
 		_, err := fenced.WriteAll(&buf, blocks)
 
 		Expect(err).NotTo(HaveOccurred())
-		Expect(buf.String()).To(Equal("package main\nfunc main() {}\n"))
+		Expect(buf.String()).To(Equal(aBlock + bBlock))
 	})
 
 	It("should write nothing for empty blocks", func() {
@@ -129,26 +134,26 @@ var _ = Describe("WriteAll", func() {
 
 	Describe("WithDelimiter", func() {
 		It("should not write delimiter before the first block", func() {
-			blocks := []fenced.Block{{Content: "package main\n"}}
+			blocks := []fenced.Block{{Content: aBlock}}
 			var buf bytes.Buffer
 
 			_, err := fenced.WriteAll(&buf, blocks, fenced.WithDelimiter("---"))
 
 			Expect(err).NotTo(HaveOccurred())
-			Expect(buf.String()).To(Equal("package main\n"))
+			Expect(buf.String()).To(Equal(aBlock))
 		})
 
 		It("should insert delimiter between multiple blocks", func() {
 			blocks := []fenced.Block{
-				{Content: "package main\n"},
-				{Content: "func main() {}\n"},
+				{Content: aBlock},
+				{Content: bBlock},
 			}
 			var buf bytes.Buffer
 
 			_, err := fenced.WriteAll(&buf, blocks, fenced.WithDelimiter("---"))
 
 			Expect(err).NotTo(HaveOccurred())
-			Expect(buf.String()).To(Equal("package main\n---\nfunc main() {}\n"))
+			Expect(buf.String()).To(Equal(aBlock + "---\n" + bBlock))
 		})
 
 		It("should insert delimiter between three blocks", func() {
@@ -234,28 +239,28 @@ var _ = Describe("WriteAll", func() {
 	Describe("WithNoImplicitNewline", func() {
 		It("should not append newline after delimiter", func() {
 			blocks := []fenced.Block{
-				{Content: "package main\n"},
-				{Content: "func main() {}\n"},
+				{Content: aBlock},
+				{Content: bBlock},
 			}
 			var buf bytes.Buffer
 
 			_, err := fenced.WriteAll(&buf, blocks, fenced.WithDelimiter("---"), fenced.WithNoImplicitNewline)
 
 			Expect(err).NotTo(HaveOccurred())
-			Expect(buf.String()).To(Equal("package main\n---func main() {}\n"))
+			Expect(buf.String()).To(Equal(aBlock + "---" + bBlock))
 		})
 
 		It("should have no effect without a delimiter", func() {
 			blocks := []fenced.Block{
-				{Content: "package main\n"},
-				{Content: "func main() {}\n"},
+				{Content: aBlock},
+				{Content: bBlock},
 			}
 			var buf bytes.Buffer
 
 			_, err := fenced.WriteAll(&buf, blocks, fenced.WithNoImplicitNewline)
 
 			Expect(err).NotTo(HaveOccurred())
-			Expect(buf.String()).To(Equal("package main\nfunc main() {}\n"))
+			Expect(buf.String()).To(Equal(aBlock + bBlock))
 		})
 	})
 })
