@@ -12,6 +12,10 @@ import (
 	"github.com/unstoppablemango/fenced/cmd"
 )
 
+const (
+	cmdName = "fenced"
+)
+
 var _ = Describe("Execute", func() {
 	var origArgs []string
 
@@ -24,7 +28,7 @@ var _ = Describe("Execute", func() {
 	})
 
 	It("should run the version subcommand", func() {
-		os.Args = []string{"fenced", "version"}
+		os.Args = []string{cmdName, "version"}
 
 		Expect(cmd.Execute()).To(Succeed())
 	})
@@ -32,7 +36,7 @@ var _ = Describe("Execute", func() {
 	It("should parse a file", func() {
 		wd, err := os.Getwd()
 		Expect(err).NotTo(HaveOccurred())
-		os.Args = []string{"fenced", filepath.Join(wd, "..", "testdata", "markdown.md")}
+		os.Args = []string{cmdName, filepath.Join(wd, "..", "testdata", "markdown.md")}
 
 		Expect(cmd.Execute()).To(Succeed())
 	})
@@ -40,7 +44,7 @@ var _ = Describe("Execute", func() {
 	It("should enable debug logging when DEBUG is set", func() {
 		DeferCleanup(os.Unsetenv, "DEBUG")
 		Expect(os.Setenv("DEBUG", "1")).To(Succeed())
-		os.Args = []string{"fenced", "version"}
+		os.Args = []string{cmdName, "version"}
 
 		Expect(cmd.Execute()).To(Succeed())
 	})
@@ -48,7 +52,7 @@ var _ = Describe("Execute", func() {
 	It("should apply no-implicit-newline flag", func() {
 		wd, err := os.Getwd()
 		Expect(err).NotTo(HaveOccurred())
-		os.Args = []string{"fenced", "-N", filepath.Join(wd, "..", "testdata", "markdown.md")}
+		os.Args = []string{cmdName, "-N", filepath.Join(wd, "..", "testdata", "markdown.md")}
 
 		Expect(cmd.Execute()).To(Succeed())
 	})
