@@ -1,12 +1,3 @@
-GO         ?= go
-GOMOD2NIX  ?= gomod2nix
-GOLANGCI   ?= golangci-lint
-GORELEASER ?= goreleaser
-GINKGO     ?= ginkgo
-NIX        ?= nix
-PODMAN     ?= podman
-WATCHEXEC  ?= watchexec
-
 GO_SRC ?= $(shell find . -name '*.go')
 
 build: bin/fenced
@@ -14,29 +5,29 @@ deps tidy: go.sum gomod2nix.toml
 container ctr docker: bin/image.tar.gz
 
 load: bin/stream_image.sh
-	$< | $(PODMAN) load
+	$< | podman load
 
 check:
-	$(NIX) flake check
+	nix flake check
 
 lint:
-	$(GOLANGCI) run
+	golangci-lint run
 
 test:
-	$(GINKGO) -r
+	go tool ginkgo -r
 
 watch:
-	$(WATCHEXEC) -e go -- $(MAKE) test
+	watchexec -e go -- $(MAKE) test
 
 cover: coverprofile.out
-	$(GO) tool cover -func=$<
+	go tool cover -func=$<
 
 update:
-	$(NIX) flake update
+	nix flake update
 
 .PHONY: dist
 dist:
-	$(GORELEASER) build --snapshot --clean
+	goreleaser build --snapshot --clean
 
 clean:
 	find . -type f -name '*cover*' -delete
@@ -46,24 +37,24 @@ bin/fenced: result
 	mkdir -p ${@D} && ln -s $(abspath $<)/bin/fenced $@
 else
 bin/fenced: ${GO_SRC}
-	$(GO) build -o $@
+	go build -o $@
 endif
 
 bin/image.tar.gz: bin/stream_image.sh
 	mkdir -p ${@D} && $< >$@
 
 bin/stream_image.sh: ${GO_SRC}
-	mkdir -p ${@D} && $(NIX) build .#ctr --out-link $@
+	mkdir -p ${@D} && nix build .#ctr --out-link $@
 
 go.sum: go.mod ${GO_SRC}
-	$(GO) mod tidy
+	go mod tidy
 	@touch $@
 
 gomod2nix.toml: go.mod go.sum
-	$(GOMOD2NIX)
+	gomod2nix
 
 result: ${GO_SRC}
-	$(NIX) build
+	nix build
 
 coverprofile.out: ${GO_SRC}
-	$(GINKGO) -r -cover
+	ginkgo -r -cover
