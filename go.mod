@@ -1,6 +1,6 @@
 module github.com/unstoppablemango/fenced
 
-go 1.26.1
+go 1.27
 
 tool (
 	github.com/golangci/golangci-lint/v2/cmd/golangci-lint

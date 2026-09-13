@@ -41,7 +41,7 @@
         let
           inherit (inputs'.gomod2nix.legacyPackages) gomod2nix mkGoEnv buildGoApplication;
 
-          go = pkgs.go_1_26;
+          go = pkgs.go_1_27;
           goEnv = mkGoEnv { pwd = ./.; };
 
           version = "0.0.5";
