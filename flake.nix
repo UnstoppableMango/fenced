@@ -13,7 +13,7 @@
     gomod2nix = {
       url = "github:nix-community/gomod2nix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.inputs.systems.follows = "flake-parts";
+      inputs.flake-utils.inputs.systems.follows = "systems";
     };
 
     treefmt-nix = {

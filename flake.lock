@@ -23,7 +23,7 @@
     "flake-utils": {
       "inputs": {
         "systems": [
-          "flake-parts"
+          "systems"
         ]
       },
       "locked": {
