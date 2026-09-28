@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: unmango/actions/setup-nix@c984cd3bb34111da20c9366bc2beb72674960f64 # v1.1.0
+      - uses: unmango/actions/setup-nix@56abf92ca6c8e241831118a76b7b2ce1d3b8d414 # v1.1.1
         with:
           github_access_token: ${{ github.token }}
           cachix_auth_token: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: unmango/actions/setup-nix@c984cd3bb34111da20c9366bc2beb72674960f64 # v1.1.0
+      - uses: unmango/actions/setup-nix@56abf92ca6c8e241831118a76b7b2ce1d3b8d414 # v1.1.1
         with:
           github_access_token: ${{ github.token }}
           cachix_auth_token: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -63,7 +63,7 @@ jobs:
         with:
           github-token: ${{ github.token }}
 
-      - uses: unmango/actions/setup-nix@c984cd3bb34111da20c9366bc2beb72674960f64 # v1.1.0
+      - uses: unmango/actions/setup-nix@56abf92ca6c8e241831118a76b7b2ce1d3b8d414 # v1.1.1
         with:
           github_access_token: ${{ github.token }}
           cachix_auth_token: ${{ secrets.CACHIX_AUTH_TOKEN }}
@@ -90,7 +90,7 @@ jobs:
           VERSION="$(nix run .#version)"
           podman image tag "fenced:${VERSION}" ${{ env.TAGS }}
 
-      - uses: unmango/actions/podman-login@c984cd3bb34111da20c9366bc2beb72674960f64 # v1.1.0
+      - uses: unmango/actions/podman-login@56abf92ca6c8e241831118a76b7b2ce1d3b8d414 # v1.1.1
         if: github.ref_name == 'main'
         with:
           registry: ghcr.io
@@ -109,7 +109,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: unmango/actions/setup-nix@c984cd3bb34111da20c9366bc2beb72674960f64 # v1.1.0
+      - uses: unmango/actions/setup-nix@56abf92ca6c8e241831118a76b7b2ce1d3b8d414 # v1.1.1
         with:
           github_access_token: ${{ github.token }}
           cachix_auth_token: ${{ secrets.CACHIX_AUTH_TOKEN }}
