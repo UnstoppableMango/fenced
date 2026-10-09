@@ -6,6 +6,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/UnstoppableMango/fenced)](https://goreportcard.com/report/github.com/UnstoppableMango/fenced)
 [![License](https://img.shields.io/github/license/UnstoppableMango/fenced)](LICENSE)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/UnstoppableMango/fenced)](go.mod)
+[![Hercules CI](https://hercules-ci.com/api/v1/site/github/account/UnstoppableMango/project/fenced/badge)](https://hercules-ci.com/github/UnstoppableMango/fenced)
 
 Parse code fences from text.
 
