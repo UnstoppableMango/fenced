@@ -66,7 +66,8 @@ go run main.go testdata/markdown.md
 - Test files end with `_test.go`
 - Suite files: `*_suite_test.go`
 - Place test fixtures in `testdata/`
-- Aim for comprehensive coverage (current CI includes coverage reporting via Codecov)
+- CI enforces the coverage policy in `.testcoverage.yml` (90% total, 80% per package); Renovate only automerges when it passes
+- Codecov still receives the coverage report
 
 ## Making Changes
 
@@ -131,6 +132,7 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) runs:
    - Checks out code
    - Sets up Go
    - Runs Ginkgo tests with race detection
+   - Fails if coverage is below the `.testcoverage.yml` policy
    - Uploads coverage to Codecov
 
 2. **Container Job**
