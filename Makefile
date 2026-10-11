@@ -30,7 +30,7 @@ dist:
 	goreleaser build --snapshot --clean
 
 clean:
-	find . -type f -name '*cover*' -delete
+	find . -type f -name '*cover*' ! -name .testcoverage.yml -delete
 
 ifneq (${IN_NIX_SHELL},)
 bin/fenced: result

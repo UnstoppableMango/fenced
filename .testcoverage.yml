@@ -1,0 +1,12 @@
+# Coverage policy. CI fails when coverage drops below these floors,
+# which also blocks Renovate automerge.
+profile: coverprofile.out
+
+threshold:
+  file: 0
+  package: 80
+  total: 90
+
+exclude:
+  paths:
+    - ^main\.go$

@@ -2,7 +2,8 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "github>UnstoppableMango/renovate-config",
+    "github>UnstoppableMango/renovate-config:automerge",
+    "github>UnstoppableMango/renovate-config:gomod2nix(.)",
     "schedule:daily"
-  ],
-  "automerge": true
+  ]
 }
