@@ -1834,12 +1834,12 @@ schema = 3
     hash = 'sha256-jJfTEztGWbxltg3yHD3AqjMc91tw7iSj/FgV+zvMjjM='
 
   [mod.'go.opentelemetry.io/otel']
-    version = 'v1.46.0'
-    hash = 'sha256-2+xTacXn22hsJuMGGgXwazMbP/ZW5gkPRnf+rNUZgvQ='
+    version = 'v1.47.0'
+    hash = 'sha256-D4dSqVH4J9tKmnQWZFANTZ3+frHUjFIgcsvJWPSwuU4='
 
   [mod.'go.opentelemetry.io/otel/metric']
-    version = 'v1.46.0'
-    hash = 'sha256-cY1DXXzRfcP0kKh7oBzowbu6kbFr3jANiEVyMlD5Bt8='
+    version = 'v1.47.0'
+    hash = 'sha256-ZKgYAoUSGUrI/u2qctou/GVlgJ0Kd9aMEVxudopPfFQ='
 
   [mod.'go.opentelemetry.io/otel/sdk']
     version = 'v1.46.0'
@@ -1850,8 +1850,8 @@ schema = 3
     hash = 'sha256-7HyWcBj0lBc9V29f14gPFS3mBPrHZmC3TFuRsfIo7mI='
 
   [mod.'go.opentelemetry.io/otel/trace']
-    version = 'v1.46.0'
-    hash = 'sha256-zfj85gCR5Z3v1N+8nlOO+6+FVShaL/7Vb/3lXjdXnnw='
+    version = 'v1.47.0'
+    hash = 'sha256-W0eb1RPyxX7WUXrQIg9+da00P46fRUlL2S1kgFOvAM0='
 
   [mod.'go.uber.org/atomic']
     version = 'v1.11.0'
